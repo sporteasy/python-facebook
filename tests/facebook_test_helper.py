@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from facebook.exceptions import FacebookException
-from facebook.request import FacebookRequest
-from facebook.session import FacebookSession
+from python_facebook.exceptions import FacebookException
+from python_facebook.request import FacebookRequest
+from python_facebook.session import FacebookSession
 from tests.facebook_test_credentials import FacebookTestCredentials
 
 

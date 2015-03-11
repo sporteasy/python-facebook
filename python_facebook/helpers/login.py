@@ -2,8 +2,8 @@
 import urllib
 import os
 
-from facebook.request import FacebookRequest
-from facebook.session import FacebookSession
+from python_facebook.request import FacebookRequest
+from python_facebook.session import FacebookSession
 
 
 class FacebookRedirectLoginHelper(object):

@@ -7,8 +7,8 @@ import urlparse
 
 from simplejson import JSONDecodeError
 
-from facebook.response import FacebookResponse
-from facebook.session import FacebookSession
+from python_facebook.response import FacebookResponse
+from python_facebook.session import FacebookSession
 
 
 class FacebookRequest(object):
@@ -73,7 +73,7 @@ class FacebookRequest(object):
             return FacebookResponse(self, data, raw_text_result, etag_hit, etag_received)
 
         if 'error' in decoded_result:
-            from facebook.exceptions import FacebookRequestException
+            from python_facebook.exceptions import FacebookRequestException
 
             raise FacebookRequestException.create(raw_text_result, decoded_result['error'],
                                                   response.status_code)

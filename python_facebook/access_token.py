@@ -3,8 +3,8 @@ import time
 
 from datetime import datetime, timedelta
 
-from facebook.exceptions import FacebookRequestException
-from facebook.graph_session_info import GraphSessionInfo
+from python_facebook.exceptions import FacebookRequestException
+from python_facebook.graph_session_info import GraphSessionInfo
 
 
 class AccessToken(object):
@@ -67,7 +67,7 @@ class AccessToken(object):
 
         :return boolean:
         """
-        from facebook.session import FacebookSession
+        from python_facebook.session import FacebookSession
 
         target_app_id = FacebookSession.get_target_app_id(app_id)
 
@@ -84,8 +84,8 @@ class AccessToken(object):
             and access_token_is_still_alive
 
     def get_info(self, app_id=None, app_secret=None):
-        from facebook.request import FacebookRequest
-        from facebook.session import FacebookSession
+        from python_facebook.request import FacebookRequest
+        from python_facebook.session import FacebookSession
 
         params = {
             'input_token': self.access_token
@@ -206,8 +206,8 @@ class AccessToken(object):
 
         :return FacebookResponse:
         """
-        from facebook.session import FacebookSession
-        from facebook.request import FacebookRequest
+        from python_facebook.session import FacebookSession
+        from python_facebook.request import FacebookRequest
 
         target_app_id = FacebookSession.get_target_app_id(app_id)
         target_app_secret = FacebookSession.get_target_app_id(app_secret)

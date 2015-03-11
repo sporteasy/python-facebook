@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import unittest
 
-from facebook.request import FacebookRequest
+from python_facebook.request import FacebookRequest
 from tests.facebook_test_helper import FacebookTestHelper
 
 

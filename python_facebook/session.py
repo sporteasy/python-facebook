@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from facebook.access_token import AccessToken
+from python_facebook.access_token import AccessToken
 
 
 class FacebookSession(object):
@@ -117,7 +117,7 @@ class FacebookSession(object):
         """
         target = app_id or cls.DEFAULT_APP_ID
         if not target:
-            from facebook.exceptions import FacebookException
+            from python_facebook.exceptions import FacebookException
             raise FacebookException('You must provide or set a default application id.', 700)
         return target
 
@@ -133,7 +133,7 @@ class FacebookSession(object):
         """
         target = app_secret or cls.DEFAULT_APP_SECRET
         if not target:
-            from facebook.exceptions import FacebookException
+            from python_facebook.exceptions import FacebookException
             raise FacebookException('You must provide or set a default application secret.', 701)
         return target
 

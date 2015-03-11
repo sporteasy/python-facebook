@@ -12,8 +12,8 @@ Usage
 -----
 
 ```
-from facebook.helpers.login import FacebookRedirectLoginHelper
-from facebook.session import FacebookSession
+from python_facebook.helpers.login import FacebookRedirectLoginHelper
+from python_facebook.session import FacebookSession
 
 app_id = '<your_app_id>'
 app_secret = '<your_app_secret>'
