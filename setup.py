@@ -10,11 +10,11 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='python_facebook',
+    name='python-facebook',
     version='0.5a',
     description='Integration with Facebook Graph API',
     long_description=long_description,
-    url='https://github.com/karlwnw/python_facebook',
+    url='https://github.com/karlwnw/python-facebook',
     author='Karl WAN NAN WO',
     author_email='karl.wnw@gmail.com',
     license='MIT',
