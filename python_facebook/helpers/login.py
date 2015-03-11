@@ -149,6 +149,6 @@ class FacebookRedirectLoginHelper(object):
 
 class DjangoFacebookRedirectLoginHelper(FacebookRedirectLoginHelper):
 
-    def __init__(self, redirect_url, app_id, app_secret, session):
+    def __init__(self, redirect_url, session, app_id=None, app_secret=None):
         super(DjangoFacebookRedirectLoginHelper, self).__init__(redirect_url, app_id, app_secret)
         self.session = session
