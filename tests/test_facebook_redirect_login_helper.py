@@ -27,7 +27,9 @@ class TestFacebookRedirectLoginHelper(unittest.TestCase):
             'scope': ','.join([])
         }
 
-        expected_url = 'https://www.facebook.com/' + FacebookRequest.GRAPH_API_VERSION + '/dialog/oauth?'
-        self.assertTrue(login_url.startswith(expected_url), 'Unexpected base login URL returned from getLoginUrl().')
+        expected_url = 'https://www.facebook.com/' + FacebookRequest.GRAPH_API_VERSION \
+                       + '/dialog/oauth?'
+        self.assertTrue(login_url.startswith(expected_url),
+                        'Unexpected base login URL returned from getLoginUrl().')
         for key, val in params.items():
             self.assertIn(key + '=' + urllib.quote_plus(val), login_url)
