@@ -21,7 +21,10 @@ class FacebookSession(object):
         :param signed_request:
         :return:
         """
-        self.access_token = access_token if isinstance(access_token, AccessToken) else AccessToken(access_token)
+        if isinstance(access_token, AccessToken):
+            self.access_token = access_token
+        else:
+            self.access_token = AccessToken(access_token)
         self.signed_request = signed_request
 
     def get_token(self):
@@ -141,4 +144,3 @@ class FacebookSession(object):
     @classmethod
     def use_app_secret_proof(cls):
         return cls.USE_APP_SECRET_PROOF
-

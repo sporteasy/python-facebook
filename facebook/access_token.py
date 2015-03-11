@@ -80,7 +80,8 @@ class AccessToken(object):
         if isinstance(token_info.expires_at, datetime):
             access_token_is_still_alive = token_info.expires_at >= datetime.now()
 
-        return app_is_valid and machine_id_is_valid and access_token_is_valid and access_token_is_still_alive
+        return app_is_valid and machine_id_is_valid and access_token_is_valid \
+            and access_token_is_still_alive
 
     def get_info(self, app_id=None, app_secret=None):
         from facebook.request import FacebookRequest

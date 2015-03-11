@@ -66,7 +66,8 @@ class FacebookRequestException(FacebookException):
             return FacebookPermissionException(raw, data, status_code)
 
         # OAuth authentication error
-        elif data.get('error') and data['error'].get('type') and data['error']['type'] == 'OAuthException':
+        elif data.get('error') and data['error'].get('type') \
+                and data['error']['type'] == 'OAuthException':
             return FacebookAuthorizationException(raw, data, status_code)
 
         return FacebookOtherException(raw, data, status_code)

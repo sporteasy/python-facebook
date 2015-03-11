@@ -75,7 +75,8 @@ class FacebookRequest(object):
         if 'error' in decoded_result:
             from facebook.exceptions import FacebookRequestException
 
-            raise FacebookRequestException.create(raw_text_result, decoded_result['error'], response.status_code)
+            raise FacebookRequestException.create(raw_text_result, decoded_result['error'],
+                                                  response.status_code)
 
         return FacebookResponse(self, decoded_result, raw_text_result, etag_hit, etag_received)
 

@@ -37,8 +37,9 @@ class FacebookRedirectLoginHelper(object):
         :param scope: List of permissions to request during login
         :param version: Optional Graph API version if not default (v2.0)
         :param display_as_popup: Indicate if the page will be displayed as a popup
-        :param boolean|string auth_type: 'reauthenticate' or 'https', true is equivalent to 'reauthenticate',
-                                          false or invalid value will not add auth type parameter
+        :param boolean|string auth_type: 'reauthenticate' or 'https', true is equivalent
+                                          to 'reauthenticate', false or invalid value
+                                          will not add auth type parameter
         :return: string url
         """
         scope = scope or []
