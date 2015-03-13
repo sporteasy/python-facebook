@@ -4,7 +4,7 @@ Python Facebook
 This repository contains an open source Python library that allows you to access Facebook
 Platform from your Python app.
 
-Python Facebook is largely inspired from the Official Facebook PHP SDK.
+Python Facebook is largely inspired from the [Official Facebook PHP SDK](https://github.com/facebook/facebook-php-sdk-v4).
 This is a work in progress and only support the Facebook Login for now.
 
 
