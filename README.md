@@ -36,5 +36,17 @@ user_profile = FacebookRequest(
     '/me'
 ).execute().get_graph_object(GraphUser)
 ```
-
 "code" and "state" values are found in the GET parameters of the redirect url.
+
+
+Getting info with an access_token:
+
+```
+FacebookSession.set_default_application(app_id, app_secret)
+
+access_token_str = u'<access_token_str>'
+
+access_token = AccessToken(access_token_str)
+
+info = access_token.get_info()
+```
