@@ -98,8 +98,8 @@ class AccessToken(object):
         )
         response = request.execute().get_graph_object(GraphSessionInfo)
 
-        if response.get_expires_at():
-            self.expires_at = response.get_expires_at()
+        if response.expires_at:
+            self.expires_at = response.expires_at
 
         return response
 
