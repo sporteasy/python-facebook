@@ -97,7 +97,7 @@ class FacebookSession(object):
         :return FacebookSession:
         """
         target_app_id = cls.get_target_app_id(app_id)
-        target_app_secret = cls.get_target_app_id(app_secret)
+        target_app_secret = cls.get_target_app_secret(app_secret)
         return cls(target_app_id + '|' + target_app_secret)
 
     @classmethod
