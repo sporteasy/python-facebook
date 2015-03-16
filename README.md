@@ -19,22 +19,15 @@ app_id = '<your_app_id>'
 app_secret = '<your_app_secret>'
 redirect_url = 'http://<your_redirect_url>'
 
-FacebookSession.set_default_application(app_id, app_secret)
-
-fbrlh = FacebookRedirectLoginHelper(redirect_url)
-login_url = fbrlh.get_login_url()
+graph = FacebookGraph(app_id, app_secret)
+login_url = graph.get_login_url(redirect_url)
 ```
 
 Then in the view of your redirect url:
 
 ```
-fbrlh = FacebookRedirectLoginHelper(redirect_url)
-session = fbrlh.get_session_from_redirect(code, state)
-user_profile = FacebookRequest(
-    session,
-    'GET',
-    '/me'
-).execute().get_graph_object(GraphUser)
+graph.set_session_from_redirect(redirect_url, code, state)
+user = graph.get_graph_user()
 ```
 "code" and "state" values are found in the GET parameters of the redirect url.
 
@@ -42,11 +35,10 @@ user_profile = FacebookRequest(
 Getting info with an access_token:
 
 ```
-FacebookSession.set_default_application(app_id, app_secret)
-
 access_token_str = u'<access_token_str>'
 
-access_token = AccessToken(access_token_str)
-
-info = access_token.get_info()
+graph = FacebookGraph(APP_ID, APP_SECRET)
+graph.set_access_token(access_token_str)
+info = graph.get_access_token_info()
+user = graph.get_graph_user()
 ```
