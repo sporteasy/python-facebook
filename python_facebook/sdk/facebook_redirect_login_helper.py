@@ -2,8 +2,8 @@
 import urllib
 import os
 
-from python_facebook.request import FacebookRequest
-from python_facebook.session import FacebookSession
+from python_facebook.sdk.request import FacebookRequest
+from python_facebook.sdk.session import FacebookSession
 
 
 class FacebookRedirectLoginHelper(object):
@@ -93,6 +93,8 @@ class FacebookRedirectLoginHelper(object):
                 'code': code
             }
             response = FacebookRequest(
+                self.app_id,
+                self.app_secret,
                 FacebookSession.new_app_session(self.app_id, self.app_secret),
                 'GET',
                 '/oauth/access_token',

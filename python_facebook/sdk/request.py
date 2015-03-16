@@ -7,11 +7,14 @@ import urlparse
 
 from simplejson import JSONDecodeError
 
-from python_facebook.response import FacebookResponse
-from python_facebook.session import FacebookSession
+from python_facebook.sdk.response import FacebookResponse
+from python_facebook.sdk.session import FacebookSession
 
 
 class FacebookRequest(object):
+    """
+    Do not use directly, use python_facebook.adapters.FacebookRequest instead
+    """
 
     CLIENT_VERSION = '1.0'
 
@@ -21,7 +24,10 @@ class FacebookRequest(object):
 
     BASE_VIDEO_GRAPH_URL = 'https://graph-video.facebook.com'
 
-    def __init__(self, session, method, path, params=None, version=None, etag=None):
+    def __init__(self, app_id, app_secret, session, method, path, params=None, version=None,
+                 etag=None):
+        self.app_id = app_id
+        self.app_secret = app_secret
         self.session = session
         self.method = method
         self.path = path
@@ -73,7 +79,7 @@ class FacebookRequest(object):
             return FacebookResponse(self, data, raw_text_result, etag_hit, etag_received)
 
         if 'error' in decoded_result:
-            from python_facebook.exceptions import FacebookRequestException
+            from python_facebook.sdk.exceptions import FacebookRequestException
 
             raise FacebookRequestException.create(raw_text_result, decoded_result['error'],
                                                   response.status_code)
@@ -106,7 +112,7 @@ class FacebookRequest(object):
         :param token:
         :return:
         """
-        app_secret = FacebookSession.get_target_app_secret()
+        app_secret = FacebookSession.get_target_app_secret(self.app_secret)
         h = hmac.new(app_secret, token, hashlib.sha256)
         return h.hexdigest()
 

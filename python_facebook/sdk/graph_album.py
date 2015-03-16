@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from python_facebook.graph_object import GraphObject
+from python_facebook.sdk.graph_object import GraphObject
 
 
 class GraphAlbum(GraphObject):

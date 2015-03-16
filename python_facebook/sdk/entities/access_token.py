@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 import time
-
 from datetime import datetime, timedelta
 
-from python_facebook.exceptions import FacebookRequestException
-from python_facebook.graph_session_info import GraphSessionInfo
+from python_facebook.sdk.exceptions import FacebookRequestException
+from python_facebook.sdk.graph_session_info import GraphSessionInfo
 
 
 class AccessToken(object):
@@ -25,6 +24,9 @@ class AccessToken(object):
         self.machine_id = machine_id
 
     def __unicode__(self):
+        return self.access_token
+
+    def __str__(self):
         return self.access_token
 
     def set_expires_at_from_timestamp(self, timestamp):
@@ -67,7 +69,7 @@ class AccessToken(object):
 
         :return boolean:
         """
-        from python_facebook.session import FacebookSession
+        from python_facebook.sdk.session import FacebookSession
 
         target_app_id = FacebookSession.get_target_app_id(app_id)
 
@@ -84,13 +86,15 @@ class AccessToken(object):
             and access_token_is_still_alive
 
     def get_info(self, app_id=None, app_secret=None):
-        from python_facebook.request import FacebookRequest
-        from python_facebook.session import FacebookSession
+        from python_facebook.sdk.request import FacebookRequest
+        from python_facebook.sdk.session import FacebookSession
 
         params = {
             'input_token': self.access_token
         }
         request = FacebookRequest(
+            app_id,
+            app_secret,
             FacebookSession.new_app_session(app_id, app_secret),
             'GET',
             '/debug_token',
@@ -206,8 +210,8 @@ class AccessToken(object):
 
         :return FacebookResponse:
         """
-        from python_facebook.session import FacebookSession
-        from python_facebook.request import FacebookRequest
+        from python_facebook.sdk.session import FacebookSession
+        from python_facebook.adapters.request import FacebookRequest
 
         target_app_id = FacebookSession.get_target_app_id(app_id)
         target_app_secret = FacebookSession.get_target_app_id(app_secret)
@@ -227,6 +231,7 @@ class AccessToken(object):
         )
         return request.execute()
 
+    @property
     def is_app_session(self):
         """
         Returns true if the access token is an app session token.

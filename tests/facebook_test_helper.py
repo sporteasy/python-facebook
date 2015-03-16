@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from python_facebook.exceptions import FacebookException
-from python_facebook.request import FacebookRequest
-from python_facebook.session import FacebookSession
+from python_facebook.sdk.exceptions import FacebookException
+from python_facebook.sdk.request import FacebookRequest
+from python_facebook.sdk.session import FacebookSession
 from tests.facebook_test_credentials import FacebookTestCredentials
 
 
@@ -18,11 +18,6 @@ class FacebookTestHelper(object):
     def initialize(cls):
         if not FacebookTestCredentials.APP_ID or not FacebookTestCredentials.APP_SECRET:
             raise FacebookException('You must fill out Facebook test credentials')
-
-        FacebookSession.set_default_application(
-            FacebookTestCredentials.APP_ID,
-            FacebookTestCredentials.APP_SECRET
-        )
 
         if not isinstance(cls._TEST_SESSION, FacebookSession):
             cls._TEST_SESSION = cls.create_test_session()
@@ -42,6 +37,8 @@ class FacebookTestHelper(object):
             'permissions': ','.join(cls.TEST_USER_PERMISSIONS)
         }
         request = FacebookRequest(
+            FacebookTestCredentials.APP_ID,
+            FacebookTestCredentials.APP_SECRET,
             cls.get_app_session(),
             'POST',
             test_user_path,
@@ -58,6 +55,8 @@ class FacebookTestHelper(object):
 
         test_user_path = '/' + cls.test_user_id
         request = FacebookRequest(
+            FacebookTestCredentials.APP_ID,
+            FacebookTestCredentials.APP_SECRET,
             cls.get_app_session(),
             'DELETE',
             test_user_path

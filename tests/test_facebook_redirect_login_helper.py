@@ -2,8 +2,8 @@
 import unittest
 import urllib
 
-from python_facebook.helpers.login import FacebookRedirectLoginHelper
-from python_facebook.request import FacebookRequest
+from python_facebook.sdk.facebook_redirect_login_helper import FacebookRedirectLoginHelper
+from python_facebook.sdk.request import FacebookRequest
 from tests.facebook_test_credentials import FacebookTestCredentials
 
 
