@@ -18,3 +18,37 @@ class TestFacebookRequest(unittest.TestCase):
         ).execute().get_graph_object()
         self.assertIsNotNone(response.id)
         self.assertIsNotNone(response.name)
+
+    def test_gracefully_handles_url_appending(self):
+        params = {}
+        url = 'https://www.foo.com/'
+        processed_url = FacebookRequest.append_params_to_url(url, params)
+        self.assertEqual(url, processed_url)
+
+        params = {
+            'access_token': 'foo'
+        }
+        url = 'https://www.foo.com/'
+        processed_url = FacebookRequest.append_params_to_url(url, params)
+        self.assertEqual('https://www.foo.com/?access_token=foo', processed_url)
+
+        params = {
+            'access_token': 'foo',
+            'bar': 'baz'
+        }
+        url = 'https://www.foo.com/?foo=bar'
+        processed_url = FacebookRequest.append_params_to_url(url, params)
+        self.assertEqual(
+            'https://www.foo.com/?access_token=foo&bar=baz&foo=bar',
+            processed_url
+        )
+
+        params = {
+            'access_token': 'foo',
+        }
+        url = 'https://www.foo.com/?foo=bar&access_token=bar'
+        processed_url = FacebookRequest.append_params_to_url(url, params)
+        self.assertEqual(
+            'https://www.foo.com/?access_token=bar&foo=bar',
+            processed_url
+        )

@@ -7,7 +7,7 @@ import urlparse
 
 from simplejson import JSONDecodeError
 
-from python_facebook.sdk.response import FacebookResponse
+from python_facebook.sdk.response import FacebookResponse, QueryStringDictFormatter
 from python_facebook.sdk.session import FacebookSession
 
 
@@ -128,7 +128,12 @@ class FacebookRequest(object):
         if not params:
             return url
 
-        if not url[-1] == '?':
-            return url + '?' + urllib.urlencode(params)
+        if '?' not in url:
+            return url + '?' + urllib.urlencode(sorted(params.items()))
 
-        return url + urllib.urlencode(params)
+        path, query_string = url.split('?')
+        query_params = QueryStringDictFormatter(urlparse.parse_qs(query_string)).output
+        # Favor query_params from the original URL over params
+        params.update(query_params)
+
+        return path + '?' + urllib.urlencode(sorted(params.items()))

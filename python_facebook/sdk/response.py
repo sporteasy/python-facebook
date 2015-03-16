@@ -2,7 +2,7 @@
 from python_facebook.sdk.graph_object import GraphObject
 
 
-class Formatter(object):
+class QueryStringDictFormatter(object):
 
     def __init__(self, response_dict):
         self.response_dict = {}
@@ -21,7 +21,7 @@ class FacebookResponse(object):
 
     def __init__(self, request, response_data, raw_response, etag_hit=False, etag=None):
         self.request = request
-        self.response_data = Formatter(response_data).output
+        self.response_data = QueryStringDictFormatter(response_data).output
         self.raw_response = raw_response
         self.etag_hit = etag_hit
         self.etag = etag
