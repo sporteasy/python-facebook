@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from python_facebook.sdk.entities.access_token import AccessToken
 from python_facebook import settings
+from python_facebook.sdk.exceptions import FacebookSDKException
 
 
 class FacebookSession(object):
@@ -9,7 +10,7 @@ class FacebookSession(object):
 
     DEFAULT_APP_SECRET = settings.DEFAULT_APP_SECRET
 
-    USE_APP_SECRET_PROOF = True
+    USE_APP_SECRET_PROOF = settings.USE_APP_SECRET_PROOF
 
     def __init__(self, access_token, signed_request=None):
         """
@@ -68,11 +69,20 @@ class FacebookSession(object):
         :param app_id:
         :param app_secret:
         :return string:
+
+        @raises FacebookSDKException
         """
         return AccessToken.get_code_from_access_token(self.access_token, app_id, app_secret)
 
     def validate(self, app_id=None, app_secret=None, machine_id=None):
-        pass
+        if self.access_token.is_valid(app_id, app_secret, machine_id):
+            return True
+
+        # @TODO For v4.1 this should not throw an exception, but just return false.
+        raise FacebookSDKException(
+            'Session has expired, or is not valid for this app.',
+            601
+        )
 
     @staticmethod
     def validate_session_info(token_info, app_id=None, machine_id=None):
@@ -114,12 +124,12 @@ class FacebookSession(object):
 
         :param app_id:
         :return:
-        :raise FacebookException:
+        :raise FacebookSDKException:
         """
         target = app_id or cls.DEFAULT_APP_ID
         if not target:
-            from python_facebook.sdk.exceptions import FacebookException
-            raise FacebookException('You must provide or set a default application id.', 700)
+            from python_facebook.sdk.exceptions import FacebookSDKException
+            raise FacebookSDKException('You must provide or set a default application id.', 700)
         return target
 
     @classmethod
@@ -130,12 +140,12 @@ class FacebookSession(object):
 
         :param app_secret:
         :return:
-        :raise FacebookException:
+        :raise FacebookSDKException:
         """
         target = app_secret or cls.DEFAULT_APP_SECRET
         if not target:
-            from python_facebook.sdk.exceptions import FacebookException
-            raise FacebookException('You must provide or set a default application secret.', 701)
+            from python_facebook.sdk.exceptions import FacebookSDKException
+            raise FacebookSDKException('You must provide or set a default application secret.', 701)
         return target
 
     @classmethod

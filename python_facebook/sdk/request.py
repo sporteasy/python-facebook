@@ -51,7 +51,7 @@ class FacebookRequest(object):
         :return FacebookResponse:
         """
         url = self._get_request_url()
-        payload = self._get_parameters()
+        payload = self.get_parameters()
 
         if self.method == 'GET':
             url = self.append_params_to_url(url, payload)
@@ -102,7 +102,7 @@ class FacebookRequest(object):
 
         return base_url + '/' + self.version + self.path
 
-    def _get_parameters(self):
+    def get_parameters(self):
         return self.params
 
     def get_app_secret_proof(self, token):

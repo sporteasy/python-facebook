@@ -1,17 +1,38 @@
 # -*- coding: utf-8 -*-
 
 
-class FacebookException(Exception):
-    pass
+class FacebookSDKException(Exception):
+
+    def __init__(self, message, code=None):
+        self.message = message
+        self.code = code
+        super(FacebookSDKException, self).__init__(message)
 
 
-class FacebookRequestException(FacebookException):
+class FacebookRequestException(FacebookSDKException):
 
     def __init__(self, raw_response, response_data, status_code):
         self.raw_response = raw_response
         self.response_data = response_data
         self.status_code = status_code
-        super(FacebookRequestException, self).__init__(raw_response)
+        super(FacebookRequestException, self).__init__(
+            self.__get('message', 'Unknown Exception'),
+            self.__get('code', -1)
+        )
+        self.sub_error_code = self.__get('error_subcode', -1)
+        self.error_type = self.__get('type', '')
+
+    def __get(self, key, default=None):
+        """
+        Checks isset and returns that or a default value.
+
+        :param key:
+        :param default:
+        :return:
+        """
+        if 'error' in self.response_data and key in self.response_data['error']:
+            return self.response_data['error'][key]
+        return default
 
     @classmethod
     def create(cls, raw, data, status_code):
@@ -24,6 +45,11 @@ class FacebookRequestException(FacebookException):
         :param status_code: the HTTP response code
         :return FacebookRequestException:
         """
+        if not ('error' in data and 'code' in data['error']) and 'code' in data:
+            data = {
+                'error': data
+            }
+
         code = None
         if data.get('error') and data['error'].get('code'):
             code = int(data['error']['code'])

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from python_facebook.sdk.exceptions import FacebookException
+from python_facebook.sdk.exceptions import FacebookSDKException
 from python_facebook.sdk.request import FacebookRequest
 from python_facebook.sdk.session import FacebookSession
 from tests.facebook_test_credentials import FacebookTestCredentials
@@ -17,7 +17,7 @@ class FacebookTestHelper(object):
     @classmethod
     def initialize(cls):
         if not FacebookTestCredentials.APP_ID or not FacebookTestCredentials.APP_SECRET:
-            raise FacebookException('You must fill out Facebook test credentials')
+            raise FacebookSDKException('You must fill out Facebook test credentials')
 
         if not isinstance(cls._TEST_SESSION, FacebookSession):
             cls._TEST_SESSION = cls.create_test_session()
