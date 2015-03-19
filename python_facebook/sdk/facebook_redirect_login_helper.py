@@ -114,9 +114,6 @@ class FacebookRedirectLoginHelper(object):
             return False
 
         saved_state = self._load_state()
-        if len(state) != len(saved_state):
-            return False
-
         return state == saved_state
 
     def _store_state(self, state):
@@ -130,7 +127,7 @@ class FacebookRedirectLoginHelper(object):
 
         :return string|None:
         """
-        self.state = self.session.get(self.SESSION_PREFIX + 'state', None)
+        self.state = self.session.get(self.SESSION_PREFIX + 'state', '')
         return self.state
 
     def random(self, bytes):
