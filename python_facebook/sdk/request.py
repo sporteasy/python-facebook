@@ -18,7 +18,7 @@ class FacebookRequest(object):
 
     CLIENT_VERSION = '1.0'
 
-    GRAPH_API_VERSION = 'v2.2'
+    GRAPH_API_VERSION = 'v2.9'
 
     BASE_GRAPH_URL = 'https://graph.facebook.com'
 

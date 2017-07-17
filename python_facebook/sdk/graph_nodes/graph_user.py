@@ -2,5 +2,5 @@
 from python_facebook.sdk.graph_object import GraphObject
 
 
-class GraphUser(GraphObject):
+class GraphUser(GraphNode):
     pass
