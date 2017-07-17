@@ -2,20 +2,27 @@
 import unittest
 import json
 
-from python_facebook.sdk.exceptions import (
-    FacebookRequestException,
-    FacebookAuthorizationException,
-    FacebookServerException,
-    FacebookThrottleException,
-    FacebookPermissionException,
-    FacebookClientException,
-    FacebookOtherException,
-    FacebookSDKException
-)
+from python_facebook.sdk.exceptions.facebook_authentication_exception import FacebookAuthenticationException
+from python_facebook.sdk.exceptions.facebook_authorization_exception import FacebookAuthorizationException
+from python_facebook.sdk.exceptions.facebook_client_exception import FacebookClientException
+from python_facebook.sdk.exceptions.facebook_resumable_upload_exception import FacebookResumableUploadException
+from python_facebook.sdk.exceptions.facebook_other_exception import FacebookOtherException
+from python_facebook.sdk.exceptions.facebook_server_exception import FacebookServerException
+from python_facebook.sdk.exceptions.facebook_throttle_exception import FacebookThrottleException
+from python_facebook.sdk.exceptions.facebook_response_exception import FacebookResponseException
+from python_facebook.sdk.exceptions.facebook_sdk_exception import FacebookSDKException
 from python_facebook.sdk.session import FacebookSession
 
 
-class TestFacebookRequestException(unittest.TestCase):
+class MockResponse(object):
+    def __init__(self, json_str):
+        self.body = json_str
+
+    def get_decoded_body(self):
+        return json.loads(self.body)
+
+
+class TestFacebookResponseException(unittest.TestCase):
 
     def test_authorization_exceptions(self):
         params = {
@@ -27,59 +34,58 @@ class TestFacebookRequestException(unittest.TestCase):
             }
         }
         json_str = json.dumps(params)
-        exception = FacebookRequestException.create(json_str, params, 401)
+        response = MockResponse(json_str)
+        exception = FacebookResponseException.create(response)
 
-        self.assertTrue(isinstance(exception, FacebookAuthorizationException))
+        self.assertTrue(isinstance(exception, FacebookAuthenticationException))
         self.assertEqual(100, exception.code)
-        self.assertEqual(0, exception.sub_error_code)
-        self.assertEqual('exception', exception.error_type)
         self.assertEqual('errmsg', exception.message)
-        self.assertEqual(json_str, exception.raw_response)
-        self.assertEqual(401, exception.status_code)
 
         params['error']['code'] = 102
         json_str = json.dumps(params)
-        exception = FacebookRequestException.create(json_str, params, 401)
-        self.assertTrue(isinstance(exception, FacebookAuthorizationException))
+        response = MockResponse(json_str)
+        exception = FacebookResponseException.create(response)
+        self.assertTrue(isinstance(exception, FacebookAuthenticationException))
         self.assertEqual(102, exception.code)
 
         params['error']['code'] = 190
         json_str = json.dumps(params)
-        exception = FacebookRequestException.create(json_str, params, 401)
-        self.assertTrue(isinstance(exception, FacebookAuthorizationException))
+        response = MockResponse(json_str)
+        exception = FacebookResponseException.create(response)
+        self.assertTrue(isinstance(exception, FacebookAuthenticationException))
         self.assertEqual(190, exception.code)
 
         params['error']['type'] = 'OAuthException'
         params['error']['code'] = 0
         params['error']['error_subcode'] = 458
         json_str = json.dumps(params)
-        exception = FacebookRequestException.create(json_str, params, 401)
-        self.assertTrue(isinstance(exception, FacebookAuthorizationException))
-        self.assertEqual(458, exception.sub_error_code)
+        response = MockResponse(json_str)
+        exception = FacebookResponseException.create(response)
+        self.assertTrue(isinstance(exception, FacebookAuthenticationException))
 
         params['error']['error_subcode'] = 460
         json_str = json.dumps(params)
-        exception = FacebookRequestException.create(json_str, params, 401)
-        self.assertTrue(isinstance(exception, FacebookAuthorizationException))
-        self.assertEqual(460, exception.sub_error_code)
+        response = MockResponse(json_str)
+        exception = FacebookResponseException.create(response)
+        self.assertTrue(isinstance(exception, FacebookAuthenticationException))
 
         params['error']['error_subcode'] = 463
         json_str = json.dumps(params)
-        exception = FacebookRequestException.create(json_str, params, 401)
-        self.assertTrue(isinstance(exception, FacebookAuthorizationException))
-        self.assertEqual(463, exception.sub_error_code)
+        response = MockResponse(json_str)
+        exception = FacebookResponseException.create(response)
+        self.assertTrue(isinstance(exception, FacebookAuthenticationException))
 
         params['error']['error_subcode'] = 467
         json_str = json.dumps(params)
-        exception = FacebookRequestException.create(json_str, params, 401)
-        self.assertTrue(isinstance(exception, FacebookAuthorizationException))
-        self.assertEqual(467, exception.sub_error_code)
+        response = MockResponse(json_str)
+        exception = FacebookResponseException.create(response)
+        self.assertTrue(isinstance(exception, FacebookAuthenticationException))
 
         params['error']['error_subcode'] = 0
         json_str = json.dumps(params)
-        exception = FacebookRequestException.create(json_str, params, 401)
-        self.assertTrue(isinstance(exception, FacebookAuthorizationException))
-        self.assertEqual(0, exception.sub_error_code)
+        response = MockResponse(json_str)
+        exception = FacebookResponseException.create(response)
+        self.assertTrue(isinstance(exception, FacebookAuthenticationException))
 
     def test_server_exceptions(self):
         params = {
@@ -91,19 +97,17 @@ class TestFacebookRequestException(unittest.TestCase):
             }
         }
         json_str = json.dumps(params)
-        exception = FacebookRequestException.create(json_str, params, 500)
+        response = MockResponse(json_str)
+        exception = FacebookResponseException.create(response)
 
         self.assertTrue(isinstance(exception, FacebookServerException))
         self.assertEqual(1, exception.code)
-        self.assertEqual(0, exception.sub_error_code)
-        self.assertEqual('exception', exception.error_type)
         self.assertEqual('errmsg', exception.message)
-        self.assertEqual(json_str, exception.raw_response)
-        self.assertEqual(500, exception.status_code)
 
         params['error']['code'] = 2
         json_str = json.dumps(params)
-        exception = FacebookRequestException.create(json_str, params, 401)
+        response = MockResponse(json_str)
+        exception = FacebookResponseException.create(response)
         self.assertTrue(isinstance(exception, FacebookServerException))
         self.assertEqual(2, exception.code)
 
@@ -117,25 +121,24 @@ class TestFacebookRequestException(unittest.TestCase):
             }
         }
         json_str = json.dumps(params)
-        exception = FacebookRequestException.create(json_str, params, 401)
+        response = MockResponse(json_str)
+        exception = FacebookResponseException.create(response)
 
         self.assertTrue(isinstance(exception, FacebookThrottleException))
         self.assertEqual(4, exception.code)
-        self.assertEqual(0, exception.sub_error_code)
-        self.assertEqual('exception', exception.error_type)
         self.assertEqual('errmsg', exception.message)
-        self.assertEqual(json_str, exception.raw_response)
-        self.assertEqual(401, exception.status_code)
 
         params['error']['code'] = 17
         json_str = json.dumps(params)
-        exception = FacebookRequestException.create(json_str, params, 401)
+        response = MockResponse(json_str)
+        exception = FacebookResponseException.create(response)
         self.assertTrue(isinstance(exception, FacebookThrottleException))
         self.assertEqual(17, exception.code)
 
         params['error']['code'] = 341
         json_str = json.dumps(params)
-        exception = FacebookRequestException.create(json_str, params, 401)
+        response = MockResponse(json_str)
+        exception = FacebookResponseException.create(response)
         self.assertTrue(isinstance(exception, FacebookThrottleException))
         self.assertEqual(341, exception.code)
 
@@ -149,20 +152,18 @@ class TestFacebookRequestException(unittest.TestCase):
             }
         }
         json_str = json.dumps(params)
-        exception = FacebookRequestException.create(json_str, params, 401)
+        response = MockResponse(json_str)
+        exception = FacebookResponseException.create(response)
 
-        self.assertTrue(isinstance(exception, FacebookAuthorizationException))
+        self.assertTrue(isinstance(exception, FacebookAuthenticationException))
         self.assertEqual(230, exception.code)
-        self.assertEqual(459, exception.sub_error_code)
-        self.assertEqual('exception', exception.error_type)
         self.assertEqual('errmsg', exception.message)
-        self.assertEqual(json_str, exception.raw_response)
-        self.assertEqual(401, exception.status_code)
 
         params['error']['code'] = 464
         json_str = json.dumps(params)
-        exception = FacebookRequestException.create(json_str, params, 401)
-        self.assertTrue(isinstance(exception, FacebookAuthorizationException))
+        response = MockResponse(json_str)
+        exception = FacebookResponseException.create(response)
+        self.assertTrue(isinstance(exception, FacebookAuthenticationException))
         self.assertEqual(464, exception.code)
 
     def test_permission_exceptions(self):
@@ -175,32 +176,32 @@ class TestFacebookRequestException(unittest.TestCase):
             }
         }
         json_str = json.dumps(params)
-        exception = FacebookRequestException.create(json_str, params, 401)
+        response = MockResponse(json_str)
+        exception = FacebookResponseException.create(response)
 
-        self.assertTrue(isinstance(exception, FacebookPermissionException))
+        self.assertTrue(isinstance(exception, FacebookAuthorizationException))
         self.assertEqual(10, exception.code)
-        self.assertEqual(0, exception.sub_error_code)
-        self.assertEqual('exception', exception.error_type)
         self.assertEqual('errmsg', exception.message)
-        self.assertEqual(json_str, exception.raw_response)
-        self.assertEqual(401, exception.status_code)
 
         params['error']['code'] = 200
         json_str = json.dumps(params)
-        exception = FacebookRequestException.create(json_str, params, 401)
-        self.assertTrue(isinstance(exception, FacebookPermissionException))
+        response = MockResponse(json_str)
+        exception = FacebookResponseException.create(response)
+        self.assertTrue(isinstance(exception, FacebookAuthorizationException))
         self.assertEqual(200, exception.code)
 
         params['error']['code'] = 250
         json_str = json.dumps(params)
-        exception = FacebookRequestException.create(json_str, params, 401)
-        self.assertTrue(isinstance(exception, FacebookPermissionException))
+        response = MockResponse(json_str)
+        exception = FacebookResponseException.create(response)
+        self.assertTrue(isinstance(exception, FacebookAuthorizationException))
         self.assertEqual(250, exception.code)
 
         params['error']['code'] = 299
         json_str = json.dumps(params)
-        exception = FacebookRequestException.create(json_str, params, 401)
-        self.assertTrue(isinstance(exception, FacebookPermissionException))
+        response = MockResponse(json_str)
+        exception = FacebookResponseException.create(response)
+        self.assertTrue(isinstance(exception, FacebookAuthorizationException))
         self.assertEqual(299, exception.code)
 
     def test_client_exceptions(self):
@@ -213,15 +214,12 @@ class TestFacebookRequestException(unittest.TestCase):
             }
         }
         json_str = json.dumps(params)
-        exception = FacebookRequestException.create(json_str, params, 401)
+        response = MockResponse(json_str)
+        exception = FacebookResponseException.create(response)
 
         self.assertTrue(isinstance(exception, FacebookClientException))
         self.assertEqual(506, exception.code)
-        self.assertEqual(0, exception.sub_error_code)
-        self.assertEqual('exception', exception.error_type)
         self.assertEqual('errmsg', exception.message)
-        self.assertEqual(json_str, exception.raw_response)
-        self.assertEqual(401, exception.status_code)
 
     def test_other_exceptions(self):
         params = {
@@ -233,15 +231,12 @@ class TestFacebookRequestException(unittest.TestCase):
             }
         }
         json_str = json.dumps(params)
-        exception = FacebookRequestException.create(json_str, params, 200)
+        response = MockResponse(json_str)
+        exception = FacebookResponseException.create(response)
 
         self.assertTrue(isinstance(exception, FacebookOtherException))
         self.assertEqual(42, exception.code)
-        self.assertEqual(0, exception.sub_error_code)
-        self.assertEqual('feature', exception.error_type)
         self.assertEqual('ship love', exception.message)
-        self.assertEqual(json_str, exception.raw_response)
-        self.assertEqual(200, exception.status_code)
 
     def test_validate_throws_exception(self):
         bogus_session = FacebookSession('invalid-token')
@@ -252,3 +247,65 @@ class TestFacebookRequestException(unittest.TestCase):
         bogus_session = FacebookSession('invalid-token')
         with self.assertRaises(FacebookAuthorizationException):
             bogus_session.validate('invalid-app-id', 'invalid-app-secret')
+
+    def test_upload_exception(self):
+        params = {
+            'error': {
+                'code': 400,
+                'message': 'upload error',
+                'error_subcode': 1363030,
+                'type': 'error'
+            }
+        }
+        json_str = json.dumps(params)
+        response = MockResponse(json_str)
+        exception = FacebookResponseException.create(response)
+
+        self.assertTrue(isinstance(exception, FacebookResumableUploadException))
+        self.assertEqual(400, exception.code)
+        self.assertEqual('upload error', exception.message)
+
+        params['error']['error_subcode'] = 1363019
+        json_str = json.dumps(params)
+        response = MockResponse(json_str)
+        exception = FacebookResponseException.create(response)
+
+        self.assertTrue(isinstance(exception, FacebookResumableUploadException))
+        self.assertEqual(400, exception.code)
+        self.assertEqual('upload error', exception.message)
+
+        params['error']['error_subcode'] = 1363037
+        json_str = json.dumps(params)
+        response = MockResponse(json_str)
+        exception = FacebookResponseException.create(response)
+
+        self.assertTrue(isinstance(exception, FacebookResumableUploadException))
+        self.assertEqual(400, exception.code)
+        self.assertEqual('upload error', exception.message)
+
+        params['error']['error_subcode'] = 1363033
+        json_str = json.dumps(params)
+        response = MockResponse(json_str)
+        exception = FacebookResponseException.create(response)
+
+        self.assertTrue(isinstance(exception, FacebookResumableUploadException))
+        self.assertEqual(400, exception.code)
+        self.assertEqual('upload error', exception.message)
+
+        params['error']['error_subcode'] = 1363021
+        json_str = json.dumps(params)
+        response = MockResponse(json_str)
+        exception = FacebookResponseException.create(response)
+
+        self.assertTrue(isinstance(exception, FacebookResumableUploadException))
+        self.assertEqual(400, exception.code)
+        self.assertEqual('upload error', exception.message)
+
+        params['error']['error_subcode'] = 1363041
+        json_str = json.dumps(params)
+        response = MockResponse(json_str)
+        exception = FacebookResponseException.create(response)
+
+        self.assertTrue(isinstance(exception, FacebookResumableUploadException))
+        self.assertEqual(400, exception.code)
+        self.assertEqual('upload error', exception.message)
