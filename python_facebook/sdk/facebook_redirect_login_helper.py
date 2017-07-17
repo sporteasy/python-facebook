@@ -9,6 +9,9 @@ from python_facebook.sdk.session import FacebookSession
 class FacebookRedirectLoginHelper(object):
     """
     Inspired by Facebook PHP SDK
+
+    TODO: remove this class. This have been replaced by helpers.facebook_redirect_login_helper
+    @deprecated
     """
 
     SESSION_PREFIX = 'FBRLH_'
