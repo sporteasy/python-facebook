@@ -1,38 +1,26 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
-
-from python_facebook.sdk.graph_object import GraphObject
+from python_facebook.sdk.graph_nodes.graph_node import GraphNode
 
 
-class GraphSessionInfo(GraphObject):
+class GraphSessionInfo(GraphNode):
 
-    def __init__(self, *args, **kwargs):
-        self.app_id = None
-        self.application = None
-        self._expires_at = None
-        self.is_valid = None
-        self._issued_at = None
-        self.scopes = []
-        self.user_id = None
+    def get_app_id(self):
+        return self.get_field('app_id')
 
-        super(GraphSessionInfo, self).__init__(*args, **kwargs)
+    def get_application(self):
+        return self.get_field('application')
 
-    @property
-    def expires_at(self):
-        if not self._expires_at:
-            return None
-        return datetime.fromtimestamp(self._expires_at)
+    def get_expires_at(self):
+        return self.get_field('expires_at')
 
-    @expires_at.setter
-    def expires_at(self, value):
-        self._expires_at = value
+    def get_is_valid(self):
+        return self.get_field('is_valid')
 
-    @property
-    def issued_at(self):
-        if not self._issued_at:
-            return None
-        return datetime.fromtimestamp(self._issued_at)
+    def get_issued_at(self):
+        return self.get_field('issued_at')
 
-    @issued_at.setter
-    def issued_at(self, value):
-        self._issued_at = value
+    def get_scopes(self):
+        return self.get_field('scopes')
+
+    def get_user_id(self):
+        return self.get_field('user_id')

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from python_facebook.sdk.graph_object import GraphObject
+from python_facebook.sdk.graph_nodes.graph_node import GraphNode
 
 
-class GraphAlbum(GraphObject):
+class GraphAlbum(GraphNode):
     pass
