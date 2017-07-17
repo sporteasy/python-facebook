@@ -9,6 +9,7 @@ from simplejson import JSONDecodeError
 
 from python_facebook.sdk.response import FacebookResponse, QueryStringDictFormatter
 from python_facebook.sdk.session import FacebookSession
+from python_facebook.sdk.exceptions.facebook_response_exception import FacebookResponseException
 
 
 class FacebookRequest(object):
@@ -79,10 +80,7 @@ class FacebookRequest(object):
             return FacebookResponse(self, data, raw_text_result, etag_hit, etag_received)
 
         if 'error' in decoded_result:
-            from python_facebook.sdk.exceptions import FacebookRequestException
-
-            raise FacebookRequestException.create(raw_text_result, decoded_result['error'],
-                                                  response.status_code)
+            raise FacebookResponseException.create(response)
 
         return FacebookResponse(self, decoded_result, raw_text_result, etag_hit, etag_received)
 

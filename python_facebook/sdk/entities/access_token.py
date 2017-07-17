@@ -2,7 +2,7 @@
 import time
 from datetime import datetime, timedelta
 
-from python_facebook.sdk.exceptions import FacebookRequestException
+from python_facebook.sdk.exceptions.facebook_response_exception import FacebookResponseException
 from python_facebook.sdk.graph_session_info import GraphSessionInfo
 
 
@@ -183,11 +183,7 @@ class AccessToken(object):
 
         # todo: missing code here
 
-        raise FacebookRequestException.create(
-            response.raw_response,
-            data,
-            401
-        )
+        raise FacebookResponseException.create(response)
 
     @classmethod
     def request_code(cls, params, app_id=None, app_secret=None):
@@ -197,11 +193,7 @@ class AccessToken(object):
         if 'code' in data:
             return data['code']
 
-        raise FacebookRequestException.create(
-            response.raw_response,
-            data,
-            401
-        )
+        raise FacebookResponseException.create(response)
 
     @classmethod
     def request(cls, endpoint, params, app_id=None, app_secret=None):

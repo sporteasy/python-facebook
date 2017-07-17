@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from python_facebook.sdk.entities.access_token import AccessToken
 from python_facebook import settings
-from python_facebook.sdk.exceptions import FacebookSDKException
+from python_facebook.sdk.exceptions.facebook_sdk_exception import FacebookSDKException
 
 
 class FacebookSession(object):
@@ -128,7 +130,6 @@ class FacebookSession(object):
         """
         target = app_id or cls.DEFAULT_APP_ID
         if not target:
-            from python_facebook.sdk.exceptions import FacebookSDKException
             raise FacebookSDKException('You must provide or set a default application id.', 700)
         return target
 
@@ -144,7 +145,6 @@ class FacebookSession(object):
         """
         target = app_secret or cls.DEFAULT_APP_SECRET
         if not target:
-            from python_facebook.sdk.exceptions import FacebookSDKException
             raise FacebookSDKException('You must provide or set a default application secret.', 701)
         return target
 
