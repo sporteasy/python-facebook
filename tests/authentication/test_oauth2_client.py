@@ -44,11 +44,8 @@ class OAuth2ClientTestCase(unittest.TestCase):
             'https://foo.bar',
             'foo_state',
             scope,
-            {'foo': 'bar'},
-            '*'
+            {'foo': 'bar'}
         )
-
-        self.assertIn('*', oauth_url)
 
         expected_url = 'https://www.facebook.com/' + self.TESTING_GRAPH_VERSION + '/dialog/oauth?'
         self.assertTrue(oauth_url.startswith(expected_url),
