@@ -11,7 +11,7 @@ class AccessTokenMetadata(object):
         if not metadata.get('data'):
             raise FacebookSDKException('Unexpected debug token response data.', 401)
 
-        self.metadata = metadata['data']
+        self.metadata = metadata['data'].copy()
         self.cast_timestamps_to_datetime()
 
     def get_field(self, name, default=None):
@@ -42,13 +42,13 @@ class AccessTokenMetadata(object):
         return self.get_field('error') is not None
 
     def get_error_code(self):
-        return self.get_error_property('code')
+        return str(self.get_error_property('code'))
 
     def get_error_message(self):
         return self.get_error_property('message')
 
     def get_error_subcode(self):
-        return self.get_error_property('subcode')
+        return str(self.get_error_property('subcode'))
 
     def get_expires_at(self):
         return self.get_field('expires_at')
@@ -96,7 +96,7 @@ class AccessTokenMetadata(object):
             raise FacebookSDKException('Inspection of access token metadata shows that the access token has expired.', 401)
 
     def convert_timestamp_to_datetime(self, timestamp):
-        return datetime.fromtimestamp(timestamp)
+        return datetime.fromtimestamp(float(timestamp))
 
     def cast_timestamps_to_datetime(self):
         for key in self.date_properties:
