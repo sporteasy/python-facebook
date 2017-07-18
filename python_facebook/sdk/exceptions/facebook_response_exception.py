@@ -24,11 +24,15 @@ class FacebookResponseException(FacebookSDKException):
     def __init__(self, response, previous_exception=None):
         self.response = response
         self.response_data = response.get_decoded_body()
+        self.previous_exception = previous_exception
 
         super(FacebookResponseException, self).__init__(
             self.__get('message', 'Unknown error from Graph.'),
             self.__get('code', -1)
         )
+
+    def get_previous(self):
+        return self.previous_exception
 
     @classmethod
     def create(self, response):
@@ -44,29 +48,29 @@ class FacebookResponseException(FacebookSDKException):
 
         if data['error']['error_subcode']:
             if data['error']['error_subcode'] in OTHER_AUTHENTICATION_ERROR_CODES:
-                return FacebookAuthenticationException(message, code)
+                return FacebookResponseException(response, FacebookAuthenticationException(message, code))
             elif data['error']['error_subcode'] in VIDEO_UPLOAD_RESUMABLE_ERROR_CODES:
-                return FacebookResumableUploadException(message, code)
+                return FacebookResponseException(response, FacebookResumableUploadException(message, code))
 
         if code in LOGIN_ERROR_CODES:
-            return FacebookAuthenticationException(message, code)
+            return FacebookResponseException(response, FacebookAuthenticationException(message, code))
         elif code in SERVER_ERROR_CODES:
-            return FacebookServerException(message, code)
+            return FacebookResponseException(response, FacebookServerException(message, code))
         elif code in API_THROTTLING_ERROR_CODES:
-            return FacebookThrottleException(message, code)
+            return FacebookResponseException(response, FacebookThrottleException(message, code))
         elif code in DUPLICATE_POST_ERROR_CODES:
-            return FacebookClientException(message, code)
+            return FacebookResponseException(response, FacebookClientException(message, code))
 
         # Missing permissions
         if code == 10 or 200 <= code <= 299:
-            return FacebookAuthorizationException(message, code)
+            return FacebookResponseException(response, FacebookAuthorizationException(message, code))
 
         # OAuth authentication error
         elif data['error'].get('type', '') == 'OAuthException':
-            return FacebookAuthenticationException(message, code)
+            return FacebookResponseException(response, FacebookAuthenticationException(message, code))
 
         # All others
-        return FacebookOtherException(message, code)
+        return FacebookResponseException(response, FacebookOtherException(message, code))
 
     def __get(self, key, default=None):
         if 'error' in self.response_data and key in self.response_data['error']:
