@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-import urllib
-import hmac
-import hashlib
-import requests
-import urlparse
-
 from python_facebook.sdk.authentication.access_token import AccessToken
 from python_facebook.sdk.exceptions.facebook_sdk_exception import FacebookSDKException
 from python_facebook.sdk.facebook import Facebook
@@ -19,10 +13,6 @@ try:
 except ImportError:
     class JSONDecodeError(ValueError):
         pass
-
-from python_facebook.sdk.response import FacebookResponse, QueryStringDictFormatter
-from python_facebook.sdk.session import FacebookSession
-from python_facebook.sdk.exceptions.facebook_response_exception import FacebookResponseException
 
 
 class FacebookRequest(object):

@@ -4,10 +4,10 @@ from python_facebook.sdk.graph_nodes.graph_node import GraphNode
 
 class GraphUser(GraphNode):
     graph_object_map = {
-        'hometown': 'graph_nodes.GraphPage',
-        'location': 'graph_nodes.GraphPage',
-        'significant_other': 'graph_nodes.GraphUser',
-        'picture': 'graph_nodes.GraphPicture'
+        'hometown': '.graph_nodes.GraphPage',
+        'location': '.graph_nodes.GraphPage',
+        'significant_other': '.graph_nodes.GraphUser',
+        'picture': '.graph_nodes.GraphPicture'
     }
 
     def get_id(self):

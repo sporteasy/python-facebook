@@ -5,3 +5,4 @@ from .graph_session_info import GraphSessionInfo
 from .graph_user import GraphUser
 from .graph_cover_photo import GraphCoverPhoto
 from .graph_location import GraphLocation
+from .graph_page import GraphPage

@@ -3,11 +3,11 @@ from python_facebook.sdk.graph_nodes.graph_node import GraphNode
 
 class GraphPage(GraphNode):
     graph_object_map = {
-        'best_page': 'graph_nodes.GraphPage',
-        'global_brand_parent_page': 'graph_nodes.GraphPage',
-        'location': 'graph_nodes.GraphLocation',
-        'cover': 'graph_nodes.GraphCoverPhoto',
-        'picture': 'graph_nodes.GraphPicture'
+        'best_page': '.graph_nodes.GraphPage',
+        'global_brand_parent_page': '.graph_nodes.GraphPage',
+        'location': '.graph_nodes.GraphLocation',
+        'cover': '.graph_nodes.GraphCoverPhoto',
+        'picture': '.graph_nodes.GraphPicture'
     }
 
     def get_id(self):

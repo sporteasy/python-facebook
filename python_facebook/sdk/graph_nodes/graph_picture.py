@@ -3,7 +3,7 @@ from python_facebook.sdk.graph_nodes.graph_node import GraphNode
 
 class GraphPicture(GraphNode):
 
-    def get_is_silhouette(self):
+    def is_silhouette(self):
         return self.get_field('is_silhouette')
 
     def get_url(self):
