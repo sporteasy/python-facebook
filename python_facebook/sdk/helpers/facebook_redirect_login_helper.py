@@ -83,16 +83,16 @@ class FacebookRedirectLoginHelper(object):
         }
         return self.make_url(redirect_url, scope, params, separator)
 
-    def get_access_token(self, redirect_url=None):
+    def get_access_token(self, get_params, redirect_url=None):
         """
         Takes a valid code from a login redirect, and returns an AccessToken entity.
         """
-        code = self.get_code()
+        code = self.get_code(get_params)
 
         if not code:
             return None
 
-        self.validate_csrf()
+        self.validate_csrf(get_params)
         self.reset_csrf()
 
         redirect_url = redirect_url or self.url_detection_handler.get_current_url()
@@ -101,11 +101,11 @@ class FacebookRedirectLoginHelper(object):
 
         return self.oauth2_client.get_access_token_from_code(code, redirect_url)
 
-    def validate_csrf(self):
+    def validate_csrf(self, get_params):
         """
         Validate the request against a cross-site request forgery.
         """
-        state = self.get_state()
+        state = self.get_state(get_params)
         if not state:
             raise FacebookSDKException('Cross-site request forgery validation failed. '
                                        'Required GET param "state" missing.')
@@ -124,27 +124,26 @@ class FacebookRedirectLoginHelper(object):
     def reset_csrf(self):
         self.persistent_data_handler.set('state', None)
 
-    def get_code(self):
-        return self.get_input('code')
+    def get_code(self, get_params):
+        return self.get_input(get_params, 'code')
 
-    def get_state(self):
-        return self.get_input('state')
+    def get_state(self, get_params):
+        return self.get_input(get_params, 'state')
 
-    def get_error_code(self):
-        return self.get_input('error_code')
+    def get_error_code(self, get_params):
+        return self.get_input(get_params, 'error_code')
 
-    def get_error(self):
-        return self.get_input('error')
+    def get_error(self, get_params):
+        return self.get_input(get_params, 'error')
 
-    def get_error_reason(self):
-        return self.get_input('error_reason')
+    def get_error_reason(self, get_params):
+        return self.get_input(get_params, 'error_reason')
 
-    def get_error_description(self):
-        return self.get_input('error_description')
+    def get_error_description(self, get_params):
+        return self.get_input(get_params, 'error_description')
 
-    def get_input(self, key):
+    def get_input(self, get_params, key):
         """
         Returns a value from a GET param.
         """
-        # todo
-        return self.GET_params.get(key)
+        return get_params.get(key)

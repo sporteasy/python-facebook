@@ -7,6 +7,9 @@ from python_facebook.sdk.facebook_client import FacebookClient
 from python_facebook.sdk.helpers.facebook_redirect_login_helper import FacebookRedirectLoginHelper
 from python_facebook.sdk.persistent_data.facebook_memory_persistent_data_handler import \
     FacebookMemoryPersistentDataHandler
+from python_facebook.sdk.pseudo_random_string.urandom_pseudo_random_string_generator import \
+    UrandomPseudoRandomStringGenerator
+from tests.fixtures.foo_pseudo_random_string_generator import FooPseudoRandomStringGenerator
 from tests.fixtures.foo_redirect_login_oauth2_client import FooRedirectLoginOAuth2Client
 
 
@@ -56,3 +59,29 @@ class FacebookRedirectLoginHelperTestCase(unittest.TestCase):
         for key, value in params.items():
             self.assertIn('{}={}'.format(key, urllib.quote_plus(value)), logout_url,
                           '{}={} not found in logout_url'.format(key, urllib.quote_plus(value)))
+
+    def test_an_access_token_can_be_obtained_from_redirect(self):
+        self.persistent_data_handler.set('state', 'foo_state')
+
+        get_params = {
+            'state': 'foo_state',
+            'code': 'foo_code'
+        }
+        access_token = self.redirect_login_helper.get_access_token(get_params, self.REDIRECT_URL)
+
+        self.assertEqual('foo_token_from_code|foo_code|' + self.REDIRECT_URL,
+                         access_token)
+
+    def test_a_custom_csprsg_can_be_injected(self):
+        app = FacebookApp('123', 'foo_app_secret')
+        access_token_client = FooRedirectLoginOAuth2Client(app, FacebookClient(), 'v1337')
+        foo_prsg = FooPseudoRandomStringGenerator()
+        helper = FacebookRedirectLoginHelper(access_token_client, self.persistent_data_handler,
+                                             None, foo_prsg)
+
+        login_url = helper.get_login_url(self.REDIRECT_URL)
+        self.assertIn('state=csprs123', login_url)
+
+    def test_the_pseudo_random_string_generator_will_auto_detect_csprsg(self):
+        self.assertIsInstance(self.redirect_login_helper.get_pseudo_random_string_generator(),
+                              UrandomPseudoRandomStringGenerator)
