@@ -43,35 +43,7 @@ class RequestBodyMultipart(RequestBody):
         return "--{}\r\nContent-Disposition: form-data; name=\"{}\"\r\n\r\n{}\r\n".format(self.boundary, name, value)
 
     def __get_nested_params(self, params):
-        def _build_nested_params(_params, _output, _base_key=None):
-            # build params with key looking like PHP ones, eg `form[field1][field2][field3]`
-            for _key, _value in _params.items():
-                if isinstance(_value, (basestring, int, long)):
-                    if _base_key:
-                        _output_key = '{}[{}]'.format(_base_key, _key)
-                    else:
-                        _output_key = _key
-                    _output[_output_key] = _value
-                elif isinstance(_value, list):
-                    _i = 0
-                    for _element in _value:
-                        if _base_key:
-                            _output_key = '{}[{}]'.format(_base_key, _key)
-                        else:
-                            _output_key = _key
-                        _output_key = '{}[{}]'.format(_output_key, _i)
-                        _output[_output_key] = _element
-                        _i += 1
-                elif isinstance(_value, dict):
-                    if _base_key:
-                        _output_key = '{}[{}]'.format(_base_key, _key)
-                    else:
-                        _output_key = _key
-                    _output = _build_nested_params(_value, _output, _output_key)
-
-            return _output
-
-        output = _build_nested_params(params, OrderedDict())
+        output = self._build_nested_params(params, OrderedDict())
         return output
 
     def __get_file_headers(self, file):
