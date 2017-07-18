@@ -11,6 +11,8 @@ class FacebookUrlManipulator(object):
 
     @staticmethod
     def remove_params_from_url(url, params_to_filter):
+        if not url:
+            return url
         parsed = urlparse.urlparse(url)
         params = {}
         if parsed.query:
@@ -39,6 +41,8 @@ class FacebookUrlManipulator(object):
 
     @staticmethod
     def get_params_as_array(url):
+        if not url:
+            return {}
         parsed = urlparse.urlparse(url)
         parsed_dict = urlparse.parse_qs(parsed.query)
         return {key: value[0] for key, value in parsed_dict.items()}
