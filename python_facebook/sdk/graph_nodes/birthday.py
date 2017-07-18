@@ -26,3 +26,6 @@ class Birthday(object):
             format = '%Y'
 
         self.date = datetime.strptime(datestring, format).date()
+
+    def format(self, format):
+        return self.date.strftime(format)
