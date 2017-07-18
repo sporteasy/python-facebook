@@ -32,7 +32,7 @@ class AccessToken(object):
         return self.expires_at
 
     def is_app_access_token(self):
-        return '|' not in self.value
+        return '|' in self.value
 
     def is_long_lived(self):
         """

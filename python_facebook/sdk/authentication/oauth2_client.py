@@ -8,7 +8,7 @@ from python_facebook.sdk.facebook import Facebook
 from python_facebook.sdk.request import FacebookRequest
 
 
-class Oauth2Client(object):
+class OAuth2Client(object):
     BASE_AUTHORIZATION_URL = 'https://www.facebook.com'
 
     def __init__(self, app, client, graph_version=None):
@@ -60,7 +60,7 @@ class Oauth2Client(object):
             'scope': ','.join(scope)
         })
 
-        return self.BASE_AUTHORIZATION_URL + '/' + self.graph_version + 'dialog/oauth?' + \
+        return self.BASE_AUTHORIZATION_URL + '/' + self.graph_version + '/dialog/oauth?' + \
             urllib.urlencode(sorted(params.items()))
 
     def get_access_token_from_code(self, code, redirect_uri=''):
