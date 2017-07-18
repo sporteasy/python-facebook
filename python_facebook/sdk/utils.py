@@ -10,7 +10,7 @@ def get_class(path):
     try:
         mod_name, class_name = path.rsplit('.', 1)
         mod = import_module(mod_name)
-    except ImportError, e:
+    except ImportError as e:
         raise ClassNotFoundException(('Error importing class from path %s: "%s"' % (path, e)))
     try:
         class_ = getattr(mod, class_name)
