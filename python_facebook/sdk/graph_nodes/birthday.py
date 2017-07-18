@@ -1,4 +1,4 @@
-from datetime import datetime
+from dateutil.parser import parse as date_parse
 
 
 class Birthday(object):
@@ -18,14 +18,7 @@ class Birthday(object):
         self.has_year = len(parts) == 3 or len(parts) == 1
         self.has_date = len(parts) == 3 or len(parts) == 2
 
-        if len(parts) == 3:
-            format = '%m/%d/%Y'
-        elif len(parts) == 2:
-            format = '%m/%d'
-        else:
-            format = '%Y'
-
-        self.date = datetime.strptime(datestring, format).date()
+        self.datetime = date_parse(datestring)
 
     def format(self, format):
-        return self.date.strftime(format)
+        return self.datetime.strftime(format)

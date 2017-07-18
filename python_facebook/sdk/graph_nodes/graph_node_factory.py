@@ -17,9 +17,9 @@ class GraphNodeFactory(object):
      GraphNode - MAY contain DateTime's "primitives"
      GraphNode - MAY contain string's "primitives"
     """
-    BASE_GRAPH_NODE_CLASS = 'python_facebook.sdk.graph_nodes.graph_node.GraphNode'
-    BASE_GRAPH_EDGE_CLASS = 'python_facebook.sdk.graph_nodes.graph_edge.GraphEdge'
-    BASE_GRAPH_OBJECT_PREFIX = 'graph_nodes'
+    BASE_GRAPH_NODE_CLASS = '.graph_nodes.graph_node.GraphNode'
+    BASE_GRAPH_EDGE_CLASS = '.graph_nodes.graph_edge.GraphEdge'
+    BASE_GRAPH_OBJECT_PREFIX = '.graph_nodes'
 
     def __init__(self, response):
         self.response = response
