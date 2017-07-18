@@ -17,16 +17,16 @@ class GraphNodeFactory(object):
      GraphNode - MAY contain DateTime's "primitives"
      GraphNode - MAY contain string's "primitives"
     """
-    BASE_GRAPH_NODE_CLASS = 'graph_nodes.graph_node.GraphNode'
-    BASE_GRAPH_EDGE_CLASS = 'graph_nodes.graph_edge.GraphEdge'
+    BASE_GRAPH_NODE_CLASS = 'python_facebook.sdk.graph_nodes.graph_node.GraphNode'
+    BASE_GRAPH_EDGE_CLASS = 'python_facebook.sdk.graph_nodes.graph_edge.GraphEdge'
     BASE_GRAPH_OBJECT_PREFIX = 'graph_nodes'
 
     def __init__(self, response):
         self.response = response
         self.decoded_body = response.get_decoded_body()
 
-    def make_graph_node(self, subclass_name):
-        self.validate_response_as_array()
+    def make_graph_node(self, subclass_name=None):
+        self.validate_response_as_dict()
         self.validate_response_castable_as_graph_node()
 
         return self.cast_as_graph_node_or_graph_edge(self.decoded_body, subclass_name)
@@ -53,7 +53,7 @@ class GraphNodeFactory(object):
         return self.make_graph_node(self.BASE_GRAPH_OBJECT_PREFIX + '.' + 'GraphGroup')
 
     def make_graph_edge(self, subclass_name=None, auto_prefix=True):
-        self.validate_response_as_array()
+        self.validate_response_as_dict()
         self.validate_response_castable_as_graph_node()
 
         if subclass_name and auto_prefix:
@@ -61,9 +61,9 @@ class GraphNodeFactory(object):
 
         return self.cast_as_graph_node_or_graph_edge(self.decoded_body, subclass_name)
 
-    def validate_response_as_array(self):
-        if not isinstance(self.response, list):
-            raise FacebookSDKException('Unable to get response from Graph as array.', 620)
+    def validate_response_as_dict(self):
+        if not isinstance(self.decoded_body, dict):
+            raise FacebookSDKException('Unable to get response from Graph as dict.', 620)
 
     def validate_response_castable_as_graph_node(self):
         if 'data' in self.decoded_body and self.is_castable_as_graph_edge(self.decoded_body['data']):
@@ -74,11 +74,11 @@ class GraphNodeFactory(object):
             )
 
     def validate_response_castable_as_graph_edge(self):
-        if 'data' in self.decoded_body and self.is_castable_as_graph_edge(self.decoded_body['data']):
+        if not ('data' in self.decoded_body and self.is_castable_as_graph_edge(self.decoded_body['data'])):
             raise FacebookSDKException(
                 'Unable to convert response from Graph to a GraphEdge because the response does not '
                 'look like a GraphEdge. '
-                'Try using GraphNodeFactory::makeGraphNode() instead.',
+                'Try using GraphNodeFactory.make_graph_node() instead.',
                 620
             )
 
@@ -168,7 +168,8 @@ class GraphNodeFactory(object):
             return True
 
         # Checks for a sequential numeric array which would be a GraphEdge
-        return data.keys() == range(0, len(data) - 1)
+        # return data.keys() == range(0, len(data) - 1)
+        return isinstance(data, list)
 
     def validate_subclass(self, subclass):
         if issubclass(subclass, GraphNode):
