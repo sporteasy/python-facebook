@@ -5,7 +5,20 @@ import hashlib
 import requests
 import urlparse
 
-from simplejson import JSONDecodeError
+from python_facebook.sdk.authentication.access_token import AccessToken
+from python_facebook.sdk.exceptions.facebook_sdk_exception import FacebookSDKException
+from python_facebook.sdk.facebook import Facebook
+from python_facebook.sdk.file_upload.facebook_file import FacebookFile
+from python_facebook.sdk.file_upload.facebook_video import FacebookVideo
+from python_facebook.sdk.http.request_body_multipart import RequestBodyMultipart
+from python_facebook.sdk.http.request_body_url_encoded import RequestBodyUrlEncoded
+from python_facebook.sdk.url.facebook_url_manipulator import FacebookUrlManipulator
+
+try:
+    from simplejson import JSONDecodeError
+except ImportError:
+    class JSONDecodeError(ValueError):
+        pass
 
 from python_facebook.sdk.response import FacebookResponse, QueryStringDictFormatter
 from python_facebook.sdk.session import FacebookSession
@@ -13,125 +26,177 @@ from python_facebook.sdk.exceptions.facebook_response_exception import FacebookR
 
 
 class FacebookRequest(object):
-    """
-    Do not use directly, use python_facebook.adapters.FacebookRequest instead
-    """
+    def __init__(self, app=None, access_token=None, method=None, endpoint=None, params=None, e_tag=None,
+                 graph_version=None):
+        self.set_app(app)
+        self.set_access_token(access_token)
+        self.set_method(method)
+        self.set_endpoint(endpoint)
+        self.reset_files()
+        self.params = {}
+        self.set_params(params or {})
+        self.set_e_tag(e_tag)
+        self.headers = self.get_default_headers()
+        self.graph_version = graph_version or Facebook.DEFAULT_GRAPH_VERSION
 
-    CLIENT_VERSION = '1.0'
+    def set_access_token(self, access_token=None):
+        self.access_token = access_token
+        if isinstance(access_token, AccessToken):
+            self.access_token = access_token.get_value()
+        return self
 
-    GRAPH_API_VERSION = 'v2.9'
+    def set_access_token_from_params(self, access_token):
+        existing_access_token = self.get_access_token()
+        if not existing_access_token:
+            self.set_access_token(access_token)
+        elif access_token != existing_access_token:
+            raise FacebookSDKException('Access token mismatch. The access token provided in the FacebookRequest and '
+                                       'the one provided in the URL or POST params do not match.')
+        return self
 
-    BASE_GRAPH_URL = 'https://graph.facebook.com'
+    def get_access_token(self):
+        return self.access_token
 
-    BASE_VIDEO_GRAPH_URL = 'https://graph-video.facebook.com'
+    def get_access_token_entity(self):
+        return AccessToken(self.access_token) if self.access_token else None
 
-    def __init__(self, app_id, app_secret, session, method, path, params=None, version=None,
-                 etag=None):
-        self.app_id = app_id
-        self.app_secret = app_secret
-        self.session = session
+    def set_app(self, app):
+        self.app = app
+
+    def get_app(self):
+        return self.app
+
+    def get_app_secret_proof(self):
+        access_token_entity = self.get_access_token_entity()
+        if not access_token_entity:
+            return None
+        return access_token_entity.get_app_secret_proof(self.app.get_secret())
+
+    def validate_access_token(self):
+        access_token = self.get_access_token()
+        if not access_token:
+            raise FacebookSDKException('You must provide an access token.')
+
+    def set_method(self, method):
         self.method = method
-        self.path = path
-        self.version = version or self.GRAPH_API_VERSION
-        self.etag = etag
-        params = params or {}
+        if self.method:
+            self.method = self.method.upper()
 
-        if session and not params.get('access_token'):
-            params['access_token'] = session.get_token()
+    def get_method(self):
+        return self.method
 
-        if not params.get('appsecret_proof') and FacebookSession.use_app_secret_proof():
-            params['appsecret_proof'] = self.get_app_secret_proof(params['access_token'])
+    def validate_method(self):
+        if not self.method:
+            raise FacebookSDKException('HTTP method not specified.')
+        elif self.method not in  ('GET', 'POST', 'DELETE'):
+            raise FacebookSDKException('Invalid HTTP method specified.')
 
-        self.params = params
-        self.request_count = 0
+    def set_endpoint(self, endpoint):
+        # Harvest the access token from the endpoint to keep things in sync
+        params = FacebookUrlManipulator.get_params_as_array(endpoint)
+        if params.get('access_token'):
+            self.set_access_token_from_params(params['access_token'])
 
-    def execute(self):
-        """
-        Makes the request to Facebook and returns the result.
+        # Clean the token & app secret proof from the endpoint.
+        filter_params = ['access_token', 'appsecret_proof']
+        self.endpoint = FacebookUrlManipulator.remove_params_from_url(endpoint, filter_params)
+        return self
 
-        :return FacebookResponse:
-        """
-        url = self._get_request_url()
-        payload = self.get_parameters()
+    def get_endpoint(self):
+        return self.endpoint
 
-        if self.method == 'GET':
-            url = self.append_params_to_url(url, payload)
-            payload = {}
+    def get_headers(self):
+        if self.e_tag:
+            self.headers.update({
+                'If-None-Match': self.e_tag
+            })
+        return self.headers
 
-        headers = {
-            'User-Agent': 'fb-python-' + self.CLIENT_VERSION,
-            'Accept-Encoding': '*'
+    def set_headers(self, headers):
+        self.headers.update(headers)
+
+    def set_e_tag(self, e_tag):
+        self.e_tag = e_tag
+
+    def set_params(self, params):
+        if params.get('access_token'):
+            self.set_access_token_from_params(params['access_token'])
+
+        # Don't let these buggers slip in.
+        params.pop('access_token', None)
+        params.pop('appsecret_proof', None)
+
+        # @TODO Refactor code above with this
+        # params = self.sanitize_authentication_params(params)
+        params = self.sanitize_file_params(params)
+        self.dangerously_set_params(params)
+        return self
+
+    def dangerously_set_params(self, params):
+        self.params.update(params)
+        return self
+
+    def sanitize_file_params(self, params):
+        for key, value in params.items():
+            if isinstance(value, FacebookFile):
+                self.add_file(key, value)
+                del params[key]
+        return params
+
+    def add_file(self, key, file):
+        self.files.update({
+            key: file
+        })
+
+    def reset_files(self):
+        self.files = {}
+
+    def get_files(self):
+        return self.files
+
+    def contains_file_uploads(self):
+        return len(self.files)
+
+    def contains_video_uploads(self):
+        return any([isinstance(file, FacebookVideo) for file in self.files])
+
+    def get_multipart_body(self):
+        return RequestBodyMultipart(self.get_post_params(), self.files)
+
+    def get_url_encoded_body(self):
+        return RequestBodyUrlEncoded(self.get_post_params())
+
+    def get_params(self):
+        params = self.params
+        access_token = self.get_access_token()
+        if access_token:
+            params.update({
+                'access_token': access_token,
+                'appsecret_proof': self.get_app_secret_proof()
+            })
+        return params
+
+    def get_post_params(self):
+        if self.get_method() == 'POST':
+            return self.get_params()
+        return None
+
+    def get_graph_version(self):
+        return self.graph_version
+
+    def get_url(self):
+        self.validate_method()
+        url = '{}{}'.format(FacebookUrlManipulator.force_slash_prefix(self.graph_version),
+                            FacebookUrlManipulator.force_slash_prefix(self.get_endpoint()))
+        # return self.get_endpoint()
+        if self.method != 'POST':
+            params = self.get_params()
+            url = FacebookUrlManipulator.append_params_to_url(url, params)
+        return url
+
+    @classmethod
+    def get_default_headers(self):
+        return {
+            'User-Agent': 'fb-python-{}'.format(Facebook.VERSION),
+            'Accept-Encoding': '*',
         }
-        if self.etag is not None:
-            headers.update({'If-None-Match': self.etag})
-
-        method = getattr(requests, self.method.lower())
-        response = method(url, data=payload, headers=headers)
-
-        self.request_count += 1
-
-        etag_hit = 304 == response.status_code
-        etag_received = response.headers.get('ETag', None)
-        raw_text_result = response.text
-        try:
-            decoded_result = response.json()
-        except JSONDecodeError as exc:
-            data = urlparse.parse_qs(raw_text_result)
-            return FacebookResponse(self, data, raw_text_result, etag_hit, etag_received)
-
-        if 'error' in decoded_result:
-            raise FacebookResponseException.create(response)
-
-        return FacebookResponse(self, decoded_result, raw_text_result, etag_hit, etag_received)
-
-    def _get_request_url(self):
-        """
-        Returns the base Graph URL.
-
-        :return string:
-        """
-        path_elements = self.path.split('/')
-        last_in_path = path_elements[-1]
-        if last_in_path == 'videos' and self.method == 'POST':
-            base_url = self.BASE_VIDEO_GRAPH_URL
-            raise NotImplemented
-        else:
-            base_url = self.BASE_GRAPH_URL
-
-        return base_url + '/' + self.version + self.path
-
-    def get_parameters(self):
-        return self.params
-
-    def get_app_secret_proof(self, token):
-        """
-        Generate and return the appsecret_proof value for an access_token
-
-        :param token:
-        :return:
-        """
-        app_secret = FacebookSession.get_target_app_secret(self.app_secret)
-        h = hmac.new(app_secret, token, hashlib.sha256)
-        return h.hexdigest()
-
-    @staticmethod
-    def append_params_to_url(url, params):
-        """
-        Gracefully appends params to the URL.
-
-        :param url:
-        :param params:
-        :return string:
-        """
-        if not params:
-            return url
-
-        if '?' not in url:
-            return url + '?' + urllib.urlencode(sorted(params.items()))
-
-        path, query_string = url.split('?')
-        query_params = QueryStringDictFormatter(urlparse.parse_qs(query_string)).output
-        # Favor query_params from the original URL over params
-        params.update(query_params)
-
-        return path + '?' + urllib.urlencode(sorted(params.items()))

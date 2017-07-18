@@ -19,9 +19,13 @@ class FacebookUrlManipulator(object):
             for key, value in urlparse.parse_qs(parsed.query).items():
                 if key not in params_to_filter:
                     params[key] = value[0]
-        port = '' if not parsed.port else ':{}'.format(parsed.port)
-        url = '{scheme}://{host}{port}{path}'.format(scheme=parsed.scheme, host=parsed.hostname,
-                                                     port=port, path=parsed.path)
+
+        if parsed.scheme and parsed.hostname:
+            port = '' if not parsed.port else ':{}'.format(parsed.port)
+            url = '{scheme}://{host}{port}{path}'.format(scheme=parsed.scheme, host=parsed.hostname,
+                                                         port=port, path=parsed.path)
+        else:
+            url = parsed.path
         return FacebookUrlManipulator.append_params_to_url(url, params)
 
     @staticmethod

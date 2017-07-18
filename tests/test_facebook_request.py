@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 import unittest
 
+from python_facebook.sdk.exceptions.facebook_sdk_exception import FacebookSDKException
+from python_facebook.sdk.facebook import Facebook
+from python_facebook.sdk.facebook_app import FacebookApp
+from python_facebook.sdk.file_upload.facebook_file import FacebookFile
 from python_facebook.sdk.request import FacebookRequest
 from python_facebook.sdk.session import FacebookSession
 from tests.facebook_test_credentials import FacebookTestCredentials
@@ -8,139 +12,114 @@ from tests.facebook_test_helper import FacebookTestHelper
 
 
 class TestFacebookRequest(unittest.TestCase):
+    
+    def testAnEmptyRequestEntityCanInstantiate(self):
+        app = FacebookApp('123', 'foo_secret')
+        request = FacebookRequest(app)
+        self.assertIsInstance(request, FacebookRequest)
 
-    def test_gets_the_logged_in_users_profile(self):
-        response = FacebookRequest(
-            FacebookTestCredentials.APP_ID,
-            FacebookTestCredentials.APP_SECRET,
-            FacebookTestHelper.test_session(),
-            'GET',
-            '/me'
-        ).execute().get_graph_object()
-        self.assertIsNotNone(response.id)
-        self.assertIsNotNone(response.name)
+    def testAMissingAccessTokenWillThrow(self):
+        app = FacebookApp('123', 'foo_secret')
+        request = FacebookRequest(app)
+        with self.assertRaises(FacebookSDKException):
+            request.validate_access_token()
 
-    def test_can_post_and_delete(self):
-        # Create a test user
-        params = {
-            'name': 'Foo User'
-        }
-        response = FacebookRequest(
-            FacebookTestCredentials.APP_ID,
-            FacebookTestCredentials.APP_SECRET,
-            FacebookSession(FacebookTestHelper.get_app_token()),
-            'POST',
-            '/' + FacebookTestCredentials.APP_ID + '/accounts/test-users',
-            params
-        ).execute().get_graph_object()
-        user_id = response.id
+    def testAMissingMethodWillThrow(self):
+        app = FacebookApp('123', 'foo_secret')
+        request = FacebookRequest(app)
+        with self.assertRaises(FacebookSDKException):
+            request.validate_method()
 
-        # Delete test user
-        response = FacebookRequest(
-            FacebookTestCredentials.APP_ID,
-            FacebookTestCredentials.APP_SECRET,
-            FacebookSession(FacebookTestHelper.get_app_token()),
-            'DELETE',
-            '/' + user_id,
-            params
-        ).execute().get_graph_object()
-        self.assertEqual(response.success, True)
+    def testAnInvalidMethodWillThrow(self):
+        app = FacebookApp('123', 'foo_secret')
+        request = FacebookRequest(app, 'foo_token', 'FOO')
+        with self.assertRaises(FacebookSDKException):
+            request.validate_method()
 
-    def test_etag_hit(self):
-        response = FacebookRequest(
-            FacebookTestCredentials.APP_ID,
-            FacebookTestCredentials.APP_SECRET,
-            FacebookTestHelper.test_session(),
-            'GET',
-            '/104048449631599'
-        ).execute()
+    def testGetHeadersWillAutoAppendETag(self):
+        app = FacebookApp('123', 'foo_secret')
+        request = FacebookRequest(app, None, 'GET', '/foo', [], 'fooETag')
+        headers = request.get_headers()
+        expectedHeaders = FacebookRequest.get_default_headers()
+        expectedHeaders['If-None-Match'] = 'fooETag';
+        self.assertEqual(expectedHeaders, headers)
 
-        self.assertFalse(response.etag_hit)
+    def testGetParamsWillAutoAppendAccessTokenAndAppSecretProof(self):
+        app = FacebookApp('123', 'foo_secret')
+        request = FacebookRequest(app, 'foo_token', 'POST', '/foo', {'foo': 'bar'})
+        params = request.get_params()
+        self.assertEqual({
+            'foo': 'bar',
+            'access_token': 'foo_token',
+            'appsecret_proof': 'df4256903ba4e23636cc142117aa632133d75c642bd2a68955be1443bd14deb9',
+        }, params)
 
-        response = FacebookRequest(
-            FacebookTestCredentials.APP_ID,
-            FacebookTestCredentials.APP_SECRET,
-            FacebookTestHelper.test_session(),
-            'GET',
-            '/104048449631599',
-            None,
-            None,
-            response.etag
-        ).execute()
+    def testAnAccessTokenCanBeSetFromTheParams(self):
+        app = FacebookApp('123', 'foo_secret')
+        request = FacebookRequest(app, None, 'POST', '/me', {'access_token': 'bar_token'})
+        accessToken = request.get_access_token()
+        self.assertEqual('bar_token', accessToken)
 
-        self.assertTrue(response.etag_hit)
-        self.assertIsNone(response.etag)
+    def testAccessTokenConflictsWillThrow(self):
+        app = FacebookApp('123', 'foo_secret')
+        with self.assertRaises(FacebookSDKException):
+            FacebookRequest(app, 'foo_token', 'POST', '/me', {'access_token': 'bar_token'})
 
-    def test_etag_miss(self):
-        response = FacebookRequest(
-            FacebookTestCredentials.APP_ID,
-            FacebookTestCredentials.APP_SECRET,
-            FacebookTestHelper.test_session(),
-            'GET',
-            '/104048449631599',
-            None,
-            None,
-            'someRandomValue'
-        ).execute()
+    def testAProperUrlWillBeGenerated(self):
+        app = FacebookApp('123', 'foo_secret')
+        getRequest = FacebookRequest(app, 'foo_token', 'GET', '/foo', {'foo': 'bar'})
 
-        self.assertFalse(response.etag_hit)
-        self.assertIsNotNone(response.etag)
+        getUrl = getRequest.get_url()
+        expectedParams = 'access_token=foo_token&appsecret_proof=df4256903ba4e23636cc142117aa632133d75c642bd2a68955be1443bd14deb9&foo=bar'
+        expectedUrl = '/{}/foo?{}'.format(Facebook.DEFAULT_GRAPH_VERSION, expectedParams)
+        self.assertEqual(expectedUrl, getUrl)
 
-    def test_gracefully_handles_url_appending(self):
-        params = {}
-        url = 'https://www.foo.com/'
-        processed_url = FacebookRequest.append_params_to_url(url, params)
-        self.assertEqual(url, processed_url)
+        postRequest = FacebookRequest(app, 'foo_token', 'POST', '/bar', {'foo': 'bar'})
+        postUrl = postRequest.get_url()
+        expectedUrl = '/{}/bar'.format(Facebook.DEFAULT_GRAPH_VERSION)
+        self.assertEqual(expectedUrl, postUrl)
 
-        params = {
-            'access_token': 'foo'
-        }
-        url = 'https://www.foo.com/'
-        processed_url = FacebookRequest.append_params_to_url(url, params)
-        self.assertEqual('https://www.foo.com/?access_token=foo', processed_url)
-
-        params = {
-            'access_token': 'foo',
-            'bar': 'baz'
-        }
-        url = 'https://www.foo.com/?foo=bar'
-        processed_url = FacebookRequest.append_params_to_url(url, params)
-        self.assertEqual(
-            'https://www.foo.com/?access_token=foo&bar=baz&foo=bar',
-            processed_url
-        )
-
-        params = {
-            'access_token': 'foo',
-        }
-        url = 'https://www.foo.com/?foo=bar&access_token=bar'
-        processed_url = FacebookRequest.append_params_to_url(url, params)
-        self.assertEqual(
-            'https://www.foo.com/?access_token=bar&foo=bar',
-            processed_url
-        )
-
-    def test_app_secret_proof(self):
-        enable_app_secret_proof = FacebookSession.use_app_secret_proof()
-
-        FacebookSession.enable_app_secret_proof(True)
+    def testAuthenticationParamsAreStrippedAndReapplied(self):
+        app = FacebookApp('123', 'foo_secret')
         request = FacebookRequest(
-            FacebookTestCredentials.APP_ID,
-            FacebookTestCredentials.APP_SECRET,
-            FacebookTestHelper.test_session(),
-            'GET',
-            '/me'
-        )
-        self.assertTrue('appsecret_proof' in request.get_parameters())
+            app, access_token='foo_token', method='GET', endpoint='/foo',
+            params={'access_token': 'foo_token', 'appsecret_proof': 'bar_app_secret', 'bar': 'baz'})
+        url = request.get_url()
+        expectedParams = 'access_token=foo_token&appsecret_proof=df4256903ba4e23636cc142117aa632133d75c642bd2a68955be1443bd14deb9&bar=baz'
+        expectedUrl = '/{}/foo?{}'.format(Facebook.DEFAULT_GRAPH_VERSION, expectedParams)
+        self.assertEqual(expectedUrl, url)
+        params = request.get_params()
+        expectedParams = {
+            'access_token': 'foo_token',
+            'appsecret_proof': 'df4256903ba4e23636cc142117aa632133d75c642bd2a68955be1443bd14deb9',
+            'bar': 'baz',
+        }
+        self.assertEqual(expectedParams, params)
 
-        FacebookSession.enable_app_secret_proof(False)
-        request = FacebookRequest(
-            FacebookTestCredentials.APP_ID,
-            FacebookTestCredentials.APP_SECRET,
-            FacebookTestHelper.test_session(),
-            'GET',
-            '/me'
-        )
-        self.assertFalse('appsecret_proof' in request.get_parameters())
-
-        FacebookSession.enable_app_secret_proof(enable_app_secret_proof)
+    # def testAFileCanBeAddedToParams(self):
+    #     myFile = FacebookFile(__DIR__.'/foo.txt')
+    #     params = {
+    #         'name': 'Foo Bar',
+    #         'source': myFile,
+    #     }
+    #     app = FacebookApp('123', 'foo_secret')
+    #     request = FacebookRequest(app, 'foo_token', 'POST', '/foo/photos', params)
+    #     actualParams = request.get_params()
+    #     self.assertTrue(request.contains_file_uploads())
+    #     self.assertFalse(request.contains_video_uploads())
+    #     self.assertTrue('source' not in actualParams))
+    #     self.assertEqual('Foo Bar', actualParams['name'])
+    #
+    # def testAVideoCanBeAddedToParams(self):
+    #     myFile = FacebookVideo(__DIR__.'/foo.txt')
+    #     params = {
+    #         'name': 'Foo Bar',
+    #         'source': myFile,
+    #     }
+    #     app = FacebookApp('123', 'foo_secret')
+    #     request = FacebookRequest(app, 'foo_token', 'POST', '/foo/videos', params)
+    #     actualParams = request.get_params()
+    #     self.assertTrue(request.contains_file_uploads())
+    #     self.assertTrue(request.contains_video_uploads())
+    #     self.assertTrue('source' not in actualParams))
+    #     self.assertEqual('Foo Bar', actualParams['name'])

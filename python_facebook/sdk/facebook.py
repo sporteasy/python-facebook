@@ -1,7 +1,7 @@
 class Facebook(object):
 
-    # string Version number of the Facebook PHP SDK.
-    VERSION = '5.5.0'
+    # string version of this python FB sdk implementation
+    VERSION = '2.0'
 
     # string Default Graph API version for requests.
     DEFAULT_GRAPH_VERSION = 'v2.9'
