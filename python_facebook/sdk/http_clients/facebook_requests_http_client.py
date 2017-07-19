@@ -1,3 +1,4 @@
+import os
 import requests
 
 from python_facebook.sdk.http.graph_raw_response import GraphRawResponse
@@ -13,7 +14,7 @@ class FacebookRequestsHttpClient(object):
             data=body,
             headers=headers,
             timeout=timeout,
-            cert='certs/DigiCertHighAssuranceEVRootCA.pem'
+            verify=os.path.join(os.path.dirname(__file__), 'certs/DigiCertHighAssuranceEVRootCA.pem')
         )
 
         return GraphRawResponse(
