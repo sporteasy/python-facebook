@@ -1,9 +1,8 @@
-import unittest
-
 from python_facebook.sdk.authentication.access_token import AccessToken
+from tests import PythonFacebookTestCase
 
 
-class AccessTokenTest(unittest.TestCase):
+class AccessTokenTest(PythonFacebookTestCase):
 
     def test_an_access_token_can_be_returned_as_astring(self):
         access_token = AccessToken('foo_token')

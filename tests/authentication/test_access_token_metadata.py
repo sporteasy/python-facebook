@@ -1,12 +1,12 @@
 import datetime
 import time
-import unittest
 
+from tests import PythonFacebookTestCase
 from python_facebook.sdk.authentication.access_token_metadata import AccessTokenMetadata
 from python_facebook.sdk.exceptions.facebook_sdk_exception import FacebookSDKException
 
 
-class AccessTokenMetadataTestCase(unittest.TestCase):
+class AccessTokenMetadataTestCase(PythonFacebookTestCase):
     graph_response_data = {
         'data': {
             'app_id': '123',

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import unittest
 import json
 
+from tests import PythonFacebookTestCase
 from python_facebook.sdk.exceptions.facebook_sdk_exception import FacebookSDKException
 from python_facebook.sdk.graph_nodes.graph_edge import GraphEdge
 from python_facebook.sdk.graph_nodes.graph_node import GraphNode
@@ -16,8 +16,9 @@ from tests.fixtures.my_foo_graph_node import MyFooGraphNode
 from tests.fixtures.my_foo_sub_class_graph_node import MyFooSubClassGraphNode
 
 
-class GraphNodeFactoryTest(unittest.TestCase):
+class GraphNodeFactoryTest(PythonFacebookTestCase):
     def setUp(self):
+        super(GraphNodeFactoryTest, self).setUp()
         app = FacebookApp('123', 'foo_app_secret')
         self.request = FacebookRequest(app, 'foo_token', 'GET', '/me/photos?keep=me', {'foo': 'bar'}, 'foo_eTag', 'v1337')
 

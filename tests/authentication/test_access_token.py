@@ -1,10 +1,11 @@
 import time
-import unittest
+from unittest import skip
 
+from tests import PythonFacebookTestCase
 from python_facebook.sdk.authentication.access_token import AccessToken
 
 
-class AccessTokenTestCase(unittest.TestCase):
+class AccessTokenTestCase(PythonFacebookTestCase):
 
     def _get_a_week_from_now(self):
         return time.time() + (60 * 60 * 24 * 7)
@@ -59,7 +60,7 @@ class AccessTokenTestCase(unittest.TestCase):
         has_expired = app_token.is_expired()
         self.assertTrue(has_expired, 'Expected 100 second old access token to be expired.')
 
-    @unittest.skip
+    @skip
     def test_access_token_can_be_serialized(self):
         access_token = AccessToken('foo', time.time())
         raise NotImplementedError

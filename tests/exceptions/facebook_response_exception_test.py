@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import unittest
 import json
 
+from tests import PythonFacebookTestCase
 from python_facebook.sdk.exceptions.facebook_authentication_exception import FacebookAuthenticationException
 from python_facebook.sdk.exceptions.facebook_authorization_exception import FacebookAuthorizationException
 from python_facebook.sdk.exceptions.facebook_client_exception import FacebookClientException
@@ -17,9 +17,10 @@ from python_facebook.sdk.exceptions.facebook_response_exception import FacebookR
 from python_facebook.sdk.request import FacebookRequest
 
 
-class FacebookResponseExceptionTest(unittest.TestCase):
+class FacebookResponseExceptionTest(PythonFacebookTestCase):
 
     def setUp(self):
+        super(FacebookResponseExceptionTest, self).setUp()
         self.request = FacebookRequest(FacebookApp('123', 'foo'))
 
     def testAuthenticationExceptions(self):

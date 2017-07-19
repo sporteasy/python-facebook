@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import unittest
-
+from tests import PythonFacebookTestCase
 from python_facebook.sdk.http.request_body_url_encoded import RequestBodyUrlEncoded
 
 
-class RequestUrlEncodedTest(unittest.TestCase):
+class RequestUrlEncodedTest(PythonFacebookTestCase):
 
     def testCanProperlyEncodeAnArrayOfParams(self):
         message = RequestBodyUrlEncoded({

@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import unittest
 from collections import OrderedDict
 
-from python_facebook.sdk.file_upload.facebook_file import FacebookFile
+from tests import PythonFacebookTestCase
 from python_facebook.sdk.http.request_body_multipart import RequestBodyMultipart
 
 
-class RequestBodyMultipartTest(unittest.TestCase):
+class RequestBodyMultipartTest(PythonFacebookTestCase):
     maxDiff = None
 
     def testCanProperlyEncodeAnArrayOfParams(self):

@@ -1,15 +1,8 @@
 # -*- coding: utf-8 -*-
-# from tests.facebook_test_helper import FacebookTestHelper
-#
-#
-# def setUpModule():
-#     FacebookTestHelper.initialize()
-#
-#
-# def tearDownModule():
-#     FacebookTestHelper.delete_test_user()
+import unittest, os, time
 
 
-# def teardown_module(module):
-#     print "TEARDOWN DUH2"
-#     FacebookTestHelper.delete_test_user()
+class PythonFacebookTestCase(unittest.TestCase):
+    def setUp(self):
+        os.environ['TZ'] = 'Europe/Paris'
+        time.tzset()

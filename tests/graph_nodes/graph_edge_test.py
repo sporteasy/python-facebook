@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import unittest
-
+from tests import PythonFacebookTestCase
 from python_facebook.sdk.exceptions.facebook_sdk_exception import FacebookSDKException
 from python_facebook.sdk.facebook_app import FacebookApp
 from python_facebook.sdk.graph_nodes.graph_edge import GraphEdge
@@ -10,13 +9,14 @@ from python_facebook.sdk.graph_nodes.graph_node import GraphNode
 from python_facebook.sdk.request import FacebookRequest
 
 
-class GraphEdgeTest(unittest.TestCase):
+class GraphEdgeTest(PythonFacebookTestCase):
     pagination = {
         'next': 'https://graph.facebook.com/v7.12/998899/photos?pretty=0&limit=25&after=foo_after_cursor',
         'previous': 'https://graph.facebook.com/v7.12/998899/photos?pretty=0&limit=25&before=foo_before_cursor',
     }
 
     def setUp(self):
+        super(GraphEdgeTest, self).setUp()
         app = FacebookApp('123', 'foo_app_secret')
         self.request = FacebookRequest(app, 'foo_token', 'GET', '/me/photos?keep=me', {'foo': 'bar'}, 'foo_eTag', 'v1337')
 

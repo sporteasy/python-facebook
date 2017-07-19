@@ -1,6 +1,6 @@
-import unittest
 import urllib
 
+from tests import PythonFacebookTestCase
 from python_facebook.sdk.facebook import Facebook
 from python_facebook.sdk.facebook_app import FacebookApp
 from python_facebook.sdk.facebook_client import FacebookClient
@@ -13,10 +13,11 @@ from tests.fixtures.foo_pseudo_random_string_generator import FooPseudoRandomStr
 from tests.fixtures.foo_redirect_login_oauth2_client import FooRedirectLoginOAuth2Client
 
 
-class FacebookRedirectLoginHelperTestCase(unittest.TestCase):
+class FacebookRedirectLoginHelperTestCase(PythonFacebookTestCase):
     REDIRECT_URL = 'http://invalid.zzz'
 
     def setUp(self):
+        super(FacebookRedirectLoginHelperTestCase, self).setUp()
         self.persistent_data_handler = FacebookMemoryPersistentDataHandler()
 
         app = FacebookApp('123', 'foo_app_secret')
@@ -27,7 +28,6 @@ class FacebookRedirectLoginHelperTestCase(unittest.TestCase):
         scope = ['foo', 'bar']
         login_url = self.redirect_login_helper.get_login_url(self.REDIRECT_URL, scope)
 
-        print login_url
         expected_url = 'https://www.facebook.com/v1337/dialog/oauth?'
 
         self.assertTrue(login_url.startswith(expected_url),

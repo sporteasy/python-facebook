@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import unittest
-
 from unittest_data_provider import data_provider
 
+from tests import PythonFacebookTestCase
 from python_facebook.sdk.url.facebook_url_manipulator import FacebookUrlManipulator
 
 
-class TestFacebookUrlManipulator(unittest.TestCase):
+class TestFacebookUrlManipulator(PythonFacebookTestCase):
 
     dirty_urls = lambda: (
         ('http://localhost/something?state=0000&foo=bar&code=abcd', 'http://localhost/something?foo=bar'),

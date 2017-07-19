@@ -1,8 +1,8 @@
 import mock
-import unittest
 
 from datetime import datetime
 
+from tests import PythonFacebookTestCase
 from python_facebook.sdk.graph_nodes import GraphUser, GraphPicture
 from python_facebook.sdk.graph_nodes.birthday import Birthday
 from python_facebook.sdk.graph_nodes.graph_node_factory import GraphNodeFactory
@@ -10,7 +10,7 @@ from python_facebook.sdk.graph_nodes.graph_page import GraphPage
 from python_facebook.sdk.response import FacebookResponse
 
 
-class GraphUserTestCase(unittest.TestCase):
+class GraphUserTestCase(PythonFacebookTestCase):
 
     def test_dates_get_cast_to_date_time(self):
         data_from_graph = {

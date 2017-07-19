@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
-import unittest
-
+from tests import PythonFacebookTestCase
 from python_facebook.sdk.exceptions.facebook_sdk_exception import FacebookSDKException
 from python_facebook.sdk.facebook import Facebook
 from python_facebook.sdk.facebook_app import FacebookApp
 from python_facebook.sdk.request import FacebookRequest
 
 
-class TestFacebookRequest(unittest.TestCase):
+class TestFacebookRequest(PythonFacebookTestCase):
     
     def testAnEmptyRequestEntityCanInstantiate(self):
         app = FacebookApp('123', 'foo_secret')

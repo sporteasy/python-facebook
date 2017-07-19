@@ -1,13 +1,13 @@
 import mock
-import unittest
 
 from datetime import datetime
 
+from tests import PythonFacebookTestCase
 from python_facebook.sdk.graph_nodes.graph_node_factory import GraphNodeFactory
 from python_facebook.sdk.response import FacebookResponse
 
 
-class GraphSessionInfoTestCase(unittest.TestCase):
+class GraphSessionInfoTestCase(PythonFacebookTestCase):
 
     def test_dates_get_cast_to_date_time(self):
         data_from_graph = {

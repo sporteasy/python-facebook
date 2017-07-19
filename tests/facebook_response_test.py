@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import unittest
-
+from tests import PythonFacebookTestCase
 from python_facebook.sdk.exceptions.facebook_response_exception import FacebookResponseException
 from python_facebook.sdk.graph_nodes.graph_node import GraphNode
 from python_facebook.sdk.response import FacebookResponse
@@ -11,8 +10,9 @@ from python_facebook.sdk.facebook_app import FacebookApp
 from python_facebook.sdk.request import FacebookRequest
 
 
-class FacebookResponseTest(unittest.TestCase):
+class FacebookResponseTest(PythonFacebookTestCase):
     def setUp(self):
+        super(FacebookResponseTest, self).setUp()
         app = FacebookApp('123', 'foo_secret')
         self.request = FacebookRequest(app, 'foo_token', method='GET', endpoint='/me/photos?keep=me',
                                        params={'foo': 'bar'}, e_tag='foo_eTag', graph_version='v1337')

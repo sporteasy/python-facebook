@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import unittest
-
+from tests import PythonFacebookTestCase
 from python_facebook.sdk.http.graph_raw_response import GraphRawResponse
 
 
-
-class GraphRawResponseTest(unittest.TestCase):
+class GraphRawResponseTest(PythonFacebookTestCase):
 
     fakeRawProxyHeader = """HTTP/1.0 200 Connection established
     Proxy-agent: Kerio Control/7.1.1 build 1971\r\n\r\n"""

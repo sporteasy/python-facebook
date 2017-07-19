@@ -1,6 +1,6 @@
-import unittest
 import urllib
 
+from tests import PythonFacebookTestCase
 from python_facebook.sdk.authentication.access_token import AccessToken
 from python_facebook.sdk.authentication.access_token_metadata import AccessTokenMetadata
 from python_facebook.sdk.authentication.oauth2_client import OAuth2Client
@@ -9,10 +9,11 @@ from python_facebook.sdk.facebook_app import FacebookApp
 from tests.authentication.foo_facebook_client_for_oauth2_test import FooFacebookClientForOAuth2Test
 
 
-class OAuth2ClientTestCase(unittest.TestCase):
+class OAuth2ClientTestCase(PythonFacebookTestCase):
     TESTING_GRAPH_VERSION = 'v1337'
 
     def setUp(self):
+        super(OAuth2ClientTestCase, self).setUp()
         app = FacebookApp('123', 'foo_secret')
         self.client = FooFacebookClientForOAuth2Test()
         self.oauth = OAuth2Client(app, self.client, self.TESTING_GRAPH_VERSION)

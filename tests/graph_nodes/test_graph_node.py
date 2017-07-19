@@ -1,16 +1,15 @@
-import unittest
-
 from datetime import datetime
 from time import mktime
 
 import dateutil
 
+from tests import PythonFacebookTestCase
 from python_facebook.sdk.graph_nodes.graph_node import GraphNode
 
 
 FORMAT_RFC1036 = '%a, %d %b %y %H:%M:%S %z'
 
-class GraphNodeTestCase(unittest.TestCase):
+class GraphNodeTestCase(PythonFacebookTestCase):
 
     def test_an_empty_base_graph_node_can_instantiate(self):
         graph_node = GraphNode()
