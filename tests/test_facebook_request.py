@@ -4,11 +4,7 @@ import unittest
 from python_facebook.sdk.exceptions.facebook_sdk_exception import FacebookSDKException
 from python_facebook.sdk.facebook import Facebook
 from python_facebook.sdk.facebook_app import FacebookApp
-from python_facebook.sdk.file_upload.facebook_file import FacebookFile
 from python_facebook.sdk.request import FacebookRequest
-from python_facebook.sdk.session import FacebookSession
-from tests.facebook_test_credentials import FacebookTestCredentials
-from tests.facebook_test_helper import FacebookTestHelper
 
 
 class TestFacebookRequest(unittest.TestCase):

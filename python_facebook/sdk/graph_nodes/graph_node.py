@@ -11,6 +11,7 @@ from python_facebook.sdk.utils import JSONEncoder
 
 DATE_FORMAT = '%Y-%m-%dT%H:%M:%S%z'
 
+
 class GraphNode(BaseCollection):
     graph_object_map = {}
 

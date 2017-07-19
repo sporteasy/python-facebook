@@ -47,6 +47,6 @@ setup(
     # $ pip install -e .[dev,test]
     extras_require={
         'dev': ['pep8'],
-        'test': ['pytest', 'mock']
+        'test': ['pytest', 'mock', 'unittest-data-provider ']
     },
 )
