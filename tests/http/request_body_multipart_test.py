@@ -82,4 +82,7 @@ class RequestBodyMultipartTest(PythonFacebookTestCase):
         expected_body += "--foo_boundary\r\n"
         expected_body += "Content-Disposition: form-data; name=\"call_to_action[value][sponsorship][image]\"\r\n\r\nhttp://example.com/bar.jpg\r\n"
         expected_body += "--foo_boundary--\r\n"
-        self.assertEquals(expected_body, body)
+
+        self.assertEqual(len(expected_body), len(body))
+        expected_body = sorted(expected_body.split('--foo_boundary\r\n'))
+        self.assertEqual(expected_body, sorted(body.split('--foo_boundary\r\n')))
