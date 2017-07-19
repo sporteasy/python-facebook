@@ -22,21 +22,25 @@ class FacebookTestCase(unittest.TestCase):
 
     def test_instantiating_without_app_id_raises(self):
         # unset value so there is no fallback to test expected Exception
+        value = os.environ.get(Facebook.APP_ID_ENV_NAME)
         os.environ[Facebook.APP_ID_ENV_NAME] = ""
         config = {
             'app_secret': 'foo_secret'
         }
         with self.assertRaises(FacebookSDKException):
             Facebook(config)
+        os.environ[Facebook.APP_ID_ENV_NAME] = value
 
     def test_instantiating_without_app_secret_raises(self):
         # unset value so there is no fallback to test expected Exception
+        value = os.environ.get(Facebook.APP_SECRET_ENV_NAME)
         os.environ[Facebook.APP_SECRET_ENV_NAME] = ""
         config = {
             'app_id': 'foo_id'
         }
         with self.assertRaises(FacebookSDKException):
             Facebook(config)
+        os.environ[Facebook.APP_SECRET_ENV_NAME] = value
 
     def test_the_url_handler_will_default_to_the_facebook_implementation(self):
         fb = Facebook(self.config)

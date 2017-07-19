@@ -3,6 +3,7 @@ import os
 import unittest
 
 from python_facebook.sdk.exceptions.facebook_sdk_exception import FacebookSDKException
+from python_facebook.sdk.facebook import Facebook
 from python_facebook.sdk.facebook_app import FacebookApp
 from python_facebook.sdk.facebook_client import FacebookClient
 from python_facebook.sdk.graph_nodes.graph_node import GraphNode
@@ -122,8 +123,8 @@ class FacebookClientTest(unittest.TestCase):
         self.assertTrue(graph_node.get_field('success'))
 
     def _initialize_test_app(self):
-        app_id = os.environ.get('FACEBOOK_APP_ID')
-        app_secret = os.environ.get('FACEBOOK_APP_SECRET')
+        app_id = os.environ.get(Facebook.APP_ID_ENV_NAME)
+        app_secret = os.environ.get(Facebook.APP_SECRET_ENV_NAME)
 
         if not app_id or not app_secret:
             raise FacebookSDKException('You must specify your app_id/app_secret pair as environment variables')
