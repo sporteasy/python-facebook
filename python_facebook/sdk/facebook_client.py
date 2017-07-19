@@ -1,3 +1,4 @@
+from python_facebook.sdk.http_clients.facebook_requests_http_client import FacebookRequestsHttpClient
 from python_facebook.sdk.request import FacebookRequest
 from python_facebook.sdk.response import FacebookResponse
 
@@ -25,8 +26,8 @@ class FacebookClient(object):
     DEFAULT_VIDEO_UPLOAD_REQUEST_TIMEOUT = 7200
 
     def __init__(self, http_client_handler=None, enable_beta=False):
-        self.http_client_handler = http_client_handler
-        self.enable_beta_mode = enable_beta
+        self.http_client_handler = http_client_handler or self.detect_http_client_handler()
+        self._enable_beta_mode = enable_beta
 
         self.request_count = 0
 
@@ -37,16 +38,16 @@ class FacebookClient(object):
         return self.http_client_handler
 
     def detect_http_client_handler(self):
-        raise NotImplementedError
+        return FacebookRequestsHttpClient()
 
     def enable_beta_mode(self, beta_mode=True):
-        self.enable_beta_mode = beta_mode
+        self._enable_beta_mode = beta_mode
 
     def get_base_graph_url(self, post_to_video_url=False):
         if post_to_video_url:
-            return self.BASE_GRAPH_VIDEO_URL_BETA if self.enable_beta_mode else self.BASE_GRAPH_VIDEO_URL
+            return self.BASE_GRAPH_VIDEO_URL_BETA if self._enable_beta_mode else self.BASE_GRAPH_VIDEO_URL
 
-        return self.BASE_GRAPH_URL_BETA if self.enable_beta_mode else self.BASE_GRAPH_URL
+        return self.BASE_GRAPH_URL_BETA if self._enable_beta_mode else self.BASE_GRAPH_URL
 
     def prepare_request_message(self, request):
         post_to_video_url = request.contains_video_uploads()
