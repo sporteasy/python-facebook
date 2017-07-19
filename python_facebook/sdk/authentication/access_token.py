@@ -26,7 +26,8 @@ class AccessToken(object):
         return self.value
 
     def get_app_secret_proof(self, app_secret):
-        return hmac.new(app_secret, self.value, hashlib.sha256).hexdigest()
+        # convert to str as hmac does not accept unicode
+        return hmac.new(str(app_secret), str(self.value), hashlib.sha256).hexdigest()
 
     def get_expires_at(self):
         return self.expires_at

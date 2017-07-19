@@ -92,7 +92,11 @@ class FacebookResponse(object):
         """
         try:
             self.decoded_body = json.loads(self.body)
+        except TypeError:
+            # TypeError: self.body is None
+            self.decoded_body = {}
         except ValueError:
+            # ValueError: malformed JSON string
             self.decoded_body = {}
             try:
                 self.decoded_body = urlparse.parse_qs(self.body)
