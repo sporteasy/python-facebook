@@ -1,10 +1,11 @@
 import time
 import urllib
 
+from python_facebook.sdk.const import VERSION
+from python_facebook.sdk.const import DEFAULT_GRAPH_VERSION
 from python_facebook.sdk.authentication.access_token import AccessToken
 from python_facebook.sdk.authentication.access_token_metadata import AccessTokenMetadata
 from python_facebook.sdk.exceptions.facebook_sdk_exception import FacebookSDKException
-from python_facebook.sdk.facebook import Facebook
 from python_facebook.sdk.request import FacebookRequest
 
 
@@ -14,7 +15,7 @@ class OAuth2Client(object):
     def __init__(self, app, client, graph_version=None):
         self.app = app
         self.client = client
-        self.graph_version = graph_version or Facebook.DEFAULT_GRAPH_VERSION
+        self.graph_version = graph_version or DEFAULT_GRAPH_VERSION
 
         self.last_request = None
 
@@ -55,7 +56,7 @@ class OAuth2Client(object):
             'client_id': self.app.get_id(),
             'state': state,
             'response_type': 'code',
-            'sdk': 'python-sdk-' + Facebook.VERSION,
+            'sdk': 'python-sdk-' + VERSION,
             'redirect_uri': redirect_url,
             'scope': ','.join(scope)
         })

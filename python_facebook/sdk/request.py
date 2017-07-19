@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+from python_facebook.sdk.const import VERSION
+from python_facebook.sdk.const import DEFAULT_GRAPH_VERSION
 from python_facebook.sdk.authentication.access_token import AccessToken
 from python_facebook.sdk.exceptions.facebook_sdk_exception import FacebookSDKException
-from python_facebook.sdk.facebook import Facebook
 from python_facebook.sdk.file_upload.facebook_file import FacebookFile
 from python_facebook.sdk.file_upload.facebook_video import FacebookVideo
 from python_facebook.sdk.http.request_body_multipart import RequestBodyMultipart
@@ -27,7 +28,8 @@ class FacebookRequest(object):
         self.set_params(params or {})
         self.set_e_tag(e_tag)
         self.headers = self.get_default_headers()
-        self.graph_version = graph_version or Facebook.DEFAULT_GRAPH_VERSION
+
+        self.graph_version = graph_version or DEFAULT_GRAPH_VERSION
 
     def set_access_token(self, access_token=None):
         self.access_token = access_token
@@ -78,7 +80,7 @@ class FacebookRequest(object):
     def validate_method(self):
         if not self.method:
             raise FacebookSDKException('HTTP method not specified.')
-        elif self.method not in  ('GET', 'POST', 'DELETE'):
+        elif self.method not in ('GET', 'POST', 'DELETE'):
             raise FacebookSDKException('Invalid HTTP method specified.')
 
     def set_endpoint(self, endpoint):
@@ -187,6 +189,6 @@ class FacebookRequest(object):
     @classmethod
     def get_default_headers(self):
         return {
-            'User-Agent': 'fb-python-{}'.format(Facebook.VERSION),
+            'User-Agent': 'fb-python-{}'.format(VERSION),
             'Accept-Encoding': '*',
         }
