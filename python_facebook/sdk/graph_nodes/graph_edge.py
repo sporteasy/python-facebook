@@ -2,6 +2,7 @@ import copy
 
 from python_facebook.sdk.exceptions.facebook_sdk_exception import FacebookSDKException
 from python_facebook.sdk.graph_nodes.base_graph_collection import BaseCollection
+from python_facebook.sdk.url.facebook_url_manipulator import FacebookUrlManipulator
 
 
 class GraphEdge(BaseCollection):
@@ -44,7 +45,9 @@ class GraphEdge(BaseCollection):
 
     def get_pagination_url(self, direction):
         self.validate_for_pagination()
-        raise NotImplementedError
+        if 'paging' in self.metadata and not self.metadata['paging'].get(direction):
+            return None
+        return FacebookUrlManipulator.base_graph_url_endpoint(self.metadata['paging'].get(direction))
 
     def validate_for_pagination(self):
         if self.request.get_method() != 'GET':
@@ -55,16 +58,16 @@ class GraphEdge(BaseCollection):
         if not page_url:
             return None
 
-        new_request = copy.copy(self.request)
+        new_request = copy.deepcopy(self.request)
         new_request.set_endpoint(page_url)
 
         return new_request
 
     def get_next_page_request(self):
-        self.get_pagination_request('next')
+        return self.get_pagination_request('next')
 
     def get_previous_page_request(self):
-        self.get_pagination_request('previous')
+        return self.get_pagination_request('previous')
 
     def get_total_count(self):
         try:
@@ -73,4 +76,8 @@ class GraphEdge(BaseCollection):
             return None
 
     def map(self, callback):
-        raise NotImplementedError
+        if isinstance(self.items, dict):
+            items = {key: callback(value) for key, value in self.items.items()}
+        else:
+            items = [callback(value) for value in self.items]
+        return GraphEdge(self.request, items, self.metadata, self.parent_edge_endpoint, self.subclass_name)
