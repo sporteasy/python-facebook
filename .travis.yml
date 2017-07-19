@@ -3,9 +3,9 @@ sudo: false
 language: python
 python:
   - 2.7
-  - pypy
+#  - pypy
   - 3.6
-  - pypy3
+#  - pypy3
 os:
   - linux
 #  - osx
