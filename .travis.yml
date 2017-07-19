@@ -20,7 +20,7 @@ install:
 
 script:
   - tox
-  - find . -name \*.py -exec pep8 --exclude=/.tox/ --ignore=E402 {} +
+  - find . -name \*.py -exec pep8 --exclude=./.tox/ --ignore=E402 {} +
 
 notifications:
   email: false
