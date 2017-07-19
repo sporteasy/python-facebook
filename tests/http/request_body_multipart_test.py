@@ -84,5 +84,5 @@ class RequestBodyMultipartTest(PythonFacebookTestCase):
         expected_body += "--foo_boundary--\r\n"
 
         self.assertEqual(len(expected_body), len(body))
-        expected_body = sorted(expected_body.split('--foo_boundary\r\n'))
-        self.assertEqual(expected_body, sorted(body.split('--foo_boundary\r\n')))
+        expected_body = sorted(expected_body.split('--foo_boundary'))
+        self.assertEqual(expected_body, sorted(body.split('--foo_boundary')))
