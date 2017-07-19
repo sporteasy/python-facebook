@@ -112,16 +112,17 @@ class GraphNodeFactoryTest(unittest.TestCase):
         graphEdge = factory.make_graph_edge()
         graphData = graphEdge.as_array()
         self.assertIsInstance(graphEdge, GraphEdge)
-        self.assertEquals({
+
+        self.assertEquals(json.dumps({
             'id': '123',
             'name': 'Foo McBar',
             'link': 'http://facebook/foo',
-        }, graphData[0])
-        self.assertEquals({
+        }), graphData[0].as_json())
+        self.assertEquals(json.dumps({
             'id': '1337',
             'name': 'Bar McBaz',
             'link': 'http://facebook/bar',
-        }, graphData[1])
+        }), graphData[1].as_json())
 
     def testAGraphNodeWillBeCastAsAGraphNode(self):
         data = json.dumps({
@@ -159,166 +160,168 @@ class GraphNodeFactoryTest(unittest.TestCase):
             'link': 'http://facebook/foo',
         }, graphData)
 
-    # def testAGraphEdgeWillBeCastRecursively(self):
-    #     someUser = {
-    #         'id': '123',
-    #         'name': 'Foo McBar',
-    #     }
-    #     likesCollection = {
-    #         'data': [
-    #             {
-    #                 'id': '1',
-    #                 'name': 'Sammy Kaye Powers',
-    #                 'is_sexy': True,
-    #             },
-    #             {
-    #                 'id': '2',
-    #                 'name': 'Yassine Guedidi',
-    #                 'is_sexy': True,
-    #             },
-    #             {
-    #                 'id': '3',
-    #                 'name': 'Fosco Marotto',
-    #                 'is_sexy': True,
-    #             },
-    #             {
-    #                 'id': '4',
-    #                 'name': 'Foo McUgly',
-    #                 'is_sexy': False,
-    #             },
-    #         ],
-    #         'paging': {
-    #             'next': 'http://facebook/next_likes',
-    #             'previous': 'http://facebook/prev_likes',
-    #         },
-    #     }
-    #     commentsCollection = {
-    #         'data': [
-    #             {
-    #                 'id': '42_1',
-    #                 'from': someUser,
-    #                 'message': 'Foo comment.',
-    #                 'created_time': '2014-07-15T03:54:34+0000',
-    #                 'likes': likesCollection,
-    #             },
-    #             {
-    #                 'id': '42_2',
-    #                 'from': someUser,
-    #                 'message': 'Bar comment.',
-    #                 'created_time': '2014-07-15T04:11:24+0000',
-    #                 'likes': likesCollection,
-    #             },
-    #         ],
-    #         'paging': {
-    #             'next': 'http://facebook/next_comments',
-    #             'previous': 'http://facebook/prev_comments',
-    #         },
-    #     }
-    #     dataFromGraph = {
-    #         'data': [
-    #             {
-    #                 'id': '1337_1',
-    #                 'from': someUser,
-    #                 'story': 'Some great foo story.',
-    #                 'likes': likesCollection,
-    #                 'comments': commentsCollection,
-    #             },
-    #             {
-    #                 'id': '1337_2',
-    #                 'from': someUser,
-    #                 'to': {
-    #                     'data': someUser,
-    #                 },
-    #                 'message': 'Some great bar message.',
-    #                 'likes': likesCollection,
-    #                 'comments': commentsCollection,
-    #             },
-    #         ],
-    #         'paging': {
-    #             'next': 'http://facebook/next',
-    #             'previous': 'http://facebook/prev',
-    #         },
-    #     }
-    #     data = json.dumps(dataFromGraph)
-    #     res = FacebookResponse(self.request, data)
-    #     factory = GraphNodeFactory(res)
-    #     graphNode = factory.make_graph_edge()
-    #     self.assertIsInstance(graphNode, GraphEdge)
-    #     # // Story
-    #     storyObject = graphNode[0]
-    #     self.assertIsInstance(storyObject['from'], GraphNode)
-    #     self.assertIsInstance(storyObject['likes'], GraphEdge)
-    #     self.assertIsInstance(storyObject['comments'], GraphEdge)
-    #     # // Story Comments
-    #     storyComments = storyObject['comments']
-    #     firstStoryComment = storyComments[0]
-    #     self.assertIsInstance(firstStoryComment['from'], GraphNode)
-    #     # // Message
-    #     messageObject = graphNode[1]
-    #     self.assertIsInstance(messageObject['to'], GraphEdge)
-    #     toUsers = messageObject['to']
-    #     self.assertIsInstance(toUsers[0], GraphNode)
+    def testAGraphEdgeWillBeCastRecursively(self):
+        someUser = {
+            'id': '123',
+            'name': 'Foo McBar',
+        }
+        likesCollection = {
+            'data': [
+                {
+                    'id': '1',
+                    'name': 'Sammy Kaye Powers',
+                    'is_sexy': True,
+                },
+                {
+                    'id': '2',
+                    'name': 'Yassine Guedidi',
+                    'is_sexy': True,
+                },
+                {
+                    'id': '3',
+                    'name': 'Fosco Marotto',
+                    'is_sexy': True,
+                },
+                {
+                    'id': '4',
+                    'name': 'Foo McUgly',
+                    'is_sexy': False,
+                },
+            ],
+            'paging': {
+                'next': 'http://facebook/next_likes',
+                'previous': 'http://facebook/prev_likes',
+            },
+        }
+        commentsCollection = {
+            'data': [
+                {
+                    'id': '42_1',
+                    'from': someUser,
+                    'message': 'Foo comment.',
+                    'created_time': '2014-07-15T03:54:34+0000',
+                    'likes': likesCollection,
+                },
+                {
+                    'id': '42_2',
+                    'from': someUser,
+                    'message': 'Bar comment.',
+                    'created_time': '2014-07-15T04:11:24+0000',
+                    'likes': likesCollection,
+                },
+            ],
+            'paging': {
+                'next': 'http://facebook/next_comments',
+                'previous': 'http://facebook/prev_comments',
+            },
+        }
+        dataFromGraph = {
+            'data': [
+                {
+                    'id': '1337_1',
+                    'from': someUser,
+                    'story': 'Some great foo story.',
+                    'likes': likesCollection,
+                    'comments': commentsCollection,
+                },
+                {
+                    'id': '1337_2',
+                    'from': someUser,
+                    'to': {
+                        'data': [someUser],
+                    },
+                    'message': 'Some great bar message.',
+                    'likes': likesCollection,
+                    'comments': commentsCollection,
+                },
+            ],
+            'paging': {
+                'next': 'http://facebook/next',
+                'previous': 'http://facebook/prev',
+            },
+        }
+        data = json.dumps(dataFromGraph)
+        res = FacebookResponse(self.request, data)
+        factory = GraphNodeFactory(res)
+        graphNode = factory.make_graph_edge()
+        self.assertIsInstance(graphNode, GraphEdge)
+        # Story
+        storyObject = graphNode[0]
+        self.assertIsInstance(storyObject['from'], GraphNode)
+        self.assertIsInstance(storyObject['likes'], GraphEdge)
+        self.assertIsInstance(storyObject['comments'], GraphEdge)
 
-    # def testAGraphEdgeWillGenerateTheProperParentGraphEdges(self):
-    #     likesList = {
-    #         'data': [
-    #             {
-    #                 'id': '1',
-    #                 'name': 'Sammy Kaye Powers',
-    #             },
-    #         ],
-    #         'paging': {
-    #             'cursors': {
-    #                 'after': 'like_after_cursor',
-    #                 'before': 'like_before_cursor',
-    #             },
-    #         },
-    #     }
-    #     photosList = {
-    #         'data': [
-    #             {
-    #                 'id': '777',
-    #                 'name': 'Foo Photo',
-    #                 'likes': likesList,
-    #             },
-    #         ],
-    #         'paging': {
-    #             'cursors': {
-    #                 'after': 'photo_after_cursor',
-    #                 'before': 'photo_before_cursor',
-    #             },
-    #         },
-    #     }
-    #     data = json.dumps({
-    #         'data': [
-    #             {
-    #                 'id': '111',
-    #                 'name': 'Foo McBar',
-    #                 'likes': likesList,
-    #                 'photos': photosList,
-    #             },
-    #             {
-    #                 'id': '222',
-    #                 'name': 'Bar McBaz',
-    #                 'likes': likesList,
-    #                 'photos': photosList,
-    #             },
-    #         ],
-    #         'paging': {
-    #             'next': 'http://facebook/next',
-    #             'previous': 'http://facebook/prev',
-    #         },
-    #     })
-    #     res = FacebookResponse(self.request, data)
-    #     factory = GraphNodeFactory(res)
-    #     graphEdge = factory.make_graph_edge()
-    #     topGraphEdge = graphEdge.get_parent_graph_edge()
-    #     childGraphEdgeOne = graphEdge[0]['likes'].get_parent_graph_edge()
-    #     childGraphEdgeTwo = graphEdge[1]['likes'].get_parent_graph_edge()
-    #     childGraphEdgeThree = graphEdge[1]['photos'].get_parent_graph_edge()
-    #     childGraphEdgeFour = graphEdge[1]['photos'][0]['likes'].get_parent_graph_edge()
-    #     self.assertIsNone(topGraphEdge)
-    #     self.assertEquals('/111/likes', childGraphEdgeOne)
-    #     self.assertEquals('/222/likes', childGraphEdgeTwo)
-    #     self.assertEquals('/222/photos', childGraphEdgeThree)
-    #     self.assertEquals('/777/likes', childGraphEdgeFour)
+        # Story Comments
+        storyComments = storyObject['comments']
+        firstStoryComment = storyComments[0]
+        self.assertIsInstance(firstStoryComment['from'], GraphNode)
+
+        # Message
+        messageObject = graphNode[1]
+        self.assertIsInstance(messageObject['to'], GraphEdge)
+        toUsers = messageObject['to']
+        self.assertIsInstance(toUsers[0], GraphNode)
+
+    def testAGraphEdgeWillGenerateTheProperParentGraphEdges(self):
+        likesList = {
+            'data': [
+                {
+                    'id': '1',
+                    'name': 'Sammy Kaye Powers',
+                },
+            ],
+            'paging': {
+                'cursors': {
+                    'after': 'like_after_cursor',
+                    'before': 'like_before_cursor',
+                },
+            },
+        }
+        photosList = {
+            'data': [
+                {
+                    'id': '777',
+                    'name': 'Foo Photo',
+                    'likes': likesList,
+                },
+            ],
+            'paging': {
+                'cursors': {
+                    'after': 'photo_after_cursor',
+                    'before': 'photo_before_cursor',
+                },
+            },
+        }
+        data = json.dumps({
+            'data': [
+                {
+                    'id': '111',
+                    'name': 'Foo McBar',
+                    'likes': likesList,
+                    'photos': photosList,
+                },
+                {
+                    'id': '222',
+                    'name': 'Bar McBaz',
+                    'likes': likesList,
+                    'photos': photosList,
+                },
+            ],
+            'paging': {
+                'next': 'http://facebook/next',
+                'previous': 'http://facebook/prev',
+            },
+        })
+        res = FacebookResponse(self.request, data)
+        factory = GraphNodeFactory(res)
+        graphEdge = factory.make_graph_edge()
+        topGraphEdge = graphEdge.get_parent_graph_edge()
+        childGraphEdgeOne = graphEdge[0]['likes'].get_parent_graph_edge()
+        childGraphEdgeTwo = graphEdge[1]['likes'].get_parent_graph_edge()
+        childGraphEdgeThree = graphEdge[1]['photos'].get_parent_graph_edge()
+        childGraphEdgeFour = graphEdge[1]['photos'][0]['likes'].get_parent_graph_edge()
+        self.assertIsNone(topGraphEdge)
+        self.assertEquals('/111/likes', childGraphEdgeOne)
+        self.assertEquals('/222/likes', childGraphEdgeTwo)
+        self.assertEquals('/222/photos', childGraphEdgeThree)
+        self.assertEquals('/777/likes', childGraphEdgeFour)

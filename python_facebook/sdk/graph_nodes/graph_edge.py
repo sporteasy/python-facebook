@@ -19,6 +19,9 @@ class GraphEdge(BaseCollection):
 
         super(GraphEdge, self).__init__(data)
 
+    def __getitem__(self, item):
+        return self.items[item]
+
     def get_parent_graph_edge(self):
         return self.parent_edge_endpoint
 

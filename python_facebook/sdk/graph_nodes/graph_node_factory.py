@@ -54,7 +54,7 @@ class GraphNodeFactory(object):
 
     def make_graph_edge(self, subclass_name=None, auto_prefix=True):
         self.validate_response_as_dict()
-        self.validate_response_castable_as_graph_node()
+        self.validate_response_castable_as_graph_edge()
 
         if subclass_name and auto_prefix:
             subclass_name = self.BASE_GRAPH_OBJECT_PREFIX + '.' + subclass_name
@@ -123,7 +123,7 @@ class GraphNodeFactory(object):
 
         :raises FacebookSDKException
         """
-        if 'data' in self.decoded_body:
+        if 'data' in data:
             # Create GraphEdge
             if self.is_castable_as_graph_edge(data['data']):
                 return self.safely_make_graph_edge(data, subclass_name, parent_key, parent_node_id)

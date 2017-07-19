@@ -13,7 +13,7 @@ class BaseCollection(object):
         return self.as_json() == other.as_json()
 
     def __repr__(self):
-        return self.as_json()
+        return self.items
 
     def get_field(self, name, default=None):
         """

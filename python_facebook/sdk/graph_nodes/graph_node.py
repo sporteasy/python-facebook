@@ -7,7 +7,7 @@ from dateutil.parser import parse as date_parse
 
 from python_facebook.sdk.graph_nodes.base_graph_collection import BaseCollection
 from python_facebook.sdk.graph_nodes.birthday import Birthday
-
+from python_facebook.sdk.utils import JSONEncoder
 
 DATE_FORMAT = '%Y-%m-%dT%H:%M:%S%z'
 
@@ -19,6 +19,9 @@ class GraphNode(BaseCollection):
             data = {}
 
         super(GraphNode, self).__init__(self.cast_items(data))
+
+    def __getitem__(self, item):
+        return self.get_field(item)
 
     def cast_items(self, data):
         if isinstance(data, dict):
@@ -49,7 +52,7 @@ class GraphNode(BaseCollection):
         """
         Get the collection of items as JSON.
         """
-        return json.dumps(self.uncast_items(), **kwargs)
+        return JSONEncoder().encode(self.uncast_items())
 
     def is_iso8601_date_string(self, string):
         """
