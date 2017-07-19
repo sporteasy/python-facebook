@@ -1,4 +1,4 @@
-# https://travis-ci.org/profile/karlwnw/python_facebook
+# https://travis-ci.org/sporteasy/python-facebook
 os:
   - linux
   - osx
