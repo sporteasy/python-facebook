@@ -1,4 +1,5 @@
 from importlib import import_module
+import json
 
 from python_facebook.sdk.exceptions.facebook_class_not_found_exception import ClassNotFoundException
 
@@ -31,3 +32,12 @@ def constant_time_compare(val1, val2):
     for x, y in zip(val1, val2):
         result |= ord(x) ^ ord(y)
     return result == 0
+
+
+class JSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        from python_facebook.sdk.graph_nodes.base_graph_collection import BaseCollection
+
+        if isinstance(o, BaseCollection):
+            return o.__repr__()
+        return json.JSONEncoder.default(self, o)
