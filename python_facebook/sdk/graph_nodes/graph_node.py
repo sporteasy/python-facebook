@@ -1,5 +1,7 @@
 import datetime
 import json
+import re
+
 from dateutil.parser import parse as date_parse
 
 from python_facebook.sdk.graph_nodes.base_graph_collection import BaseCollection
@@ -52,7 +54,9 @@ class GraphNode(BaseCollection):
             date_parse(string)
             return True
         except ValueError:
-            return False
+            # date_parse raises for dates like 2014-W36, so let's give him another chance
+            pattern = '^\d{4}\-W([0-4][0-9]|5[0-2])$'
+            return re.match(pattern, string) is not None
 
     def should_cast_as_datetime(self, key):
         """

@@ -33,11 +33,23 @@ class GraphNodeTestCase(unittest.TestCase):
         should_pass = graph_node.is_iso8601_date_string('2014-W36')
         self.assertTrue(should_pass, 'Expected the valid ISO 8601 formatted date to pass.')
 
+        should_pass = graph_node.is_iso8601_date_string('2014-W06')
+        self.assertTrue(should_pass, 'Expected the valid ISO 8601 formatted date to pass.')
+
+        should_pass = graph_node.is_iso8601_date_string('2014-W51')
+        self.assertTrue(should_pass, 'Expected the valid ISO 8601 formatted date to pass.')
+
         # should fail
         should_fail = graph_node.is_iso8601_date_string('2009-05-19T14a39r')
         self.assertFalse(should_fail, 'Expected the invalid ISO 8601 format to fail.')
 
         should_fail = graph_node.is_iso8601_date_string('foo_time')
+        self.assertFalse(should_fail, 'Expected the invalid ISO 8601 format to fail.')
+
+        should_fail = graph_node.is_iso8601_date_string('2014-W53')
+        self.assertFalse(should_fail, 'Expected the invalid ISO 8601 format to fail.')
+
+        should_fail = graph_node.is_iso8601_date_string('2014-W3')
         self.assertFalse(should_fail, 'Expected the invalid ISO 8601 format to fail.')
 
     def test_a_time_stamp_can_be_converted_to_adate_time_object(self):
