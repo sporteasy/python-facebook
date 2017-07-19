@@ -1,12 +1,15 @@
 import datetime
 import json
 import re
+from tzlocal import get_localzone
 
 from dateutil.parser import parse as date_parse
 
 from python_facebook.sdk.graph_nodes.base_graph_collection import BaseCollection
 from python_facebook.sdk.graph_nodes.birthday import Birthday
 
+
+DATE_FORMAT = '%Y-%m-%dT%H:%M:%S%z'
 
 class GraphNode(BaseCollection):
     graph_object_map = {}
@@ -18,6 +21,12 @@ class GraphNode(BaseCollection):
         super(GraphNode, self).__init__(self.cast_items(data))
 
     def cast_items(self, data):
+        if isinstance(data, dict):
+            return self._cast_dict(data)
+        else:
+            return self._cast_list(data)
+
+    def _cast_dict(self, data):
         items = {}
         for key, val in data.items():
             if (self.should_cast_as_datetime(key)) and \
@@ -29,9 +38,12 @@ class GraphNode(BaseCollection):
                 items[key] = val
         return items
 
+    def _cast_list(self, data):
+        return data
+
     def uncast_items(self):
-        # Todo
-        raise NotImplementedError
+        items = self.as_array()
+        return {k: v.strftime(DATE_FORMAT) if isinstance(v, datetime.datetime) else v for k, v in items.items()}
 
     def as_json(self, **kwargs):
         """
@@ -78,9 +90,12 @@ class GraphNode(BaseCollection):
         Casts a date value from Graph to DateTime.
         """
         if isinstance(value, int):
-            dt = datetime.datetime.fromtimestamp(value / 1e3)
+            div = 1e3 if len(str(value)) == 13 else 1   # if len is 13, we got microseconds
+            dt = datetime.datetime.fromtimestamp(value / div)
         else:
             dt = date_parse(value)
+        if dt.tzinfo is None:
+            dt = get_localzone().localize(dt)
         return dt
 
     def cast_to_birthday(self, value):

@@ -24,10 +24,13 @@ class BaseCollection(object):
         return self.items
 
     def as_array(self):
-        def get_array_value(value):
-            return value.as_array() if isinstance(value, BaseCollection) else value
+        if isinstance(self.items, dict):
+            def get_array_value(value):
+                return value.as_array() if isinstance(value, BaseCollection) else value
 
-        return {key: get_array_value(value) for key, value in self.items.items()}
+            return {key: get_array_value(value) for key, value in self.items.items()}
+        else:
+            return self.items
 
     def map(self, func):
         raise NotImplementedError

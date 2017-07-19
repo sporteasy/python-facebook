@@ -1,7 +1,14 @@
 import unittest
 
+from datetime import datetime
+from time import mktime
+
+import dateutil
+
 from python_facebook.sdk.graph_nodes.graph_node import GraphNode
 
+
+FORMAT_RFC1036 = '%a, %d %b %y %H:%M:%S %z'
 
 class GraphNodeTestCase(unittest.TestCase):
 
@@ -53,4 +60,52 @@ class GraphNodeTestCase(unittest.TestCase):
         self.assertFalse(should_fail, 'Expected the invalid ISO 8601 format to fail.')
 
     def test_a_time_stamp_can_be_converted_to_adate_time_object(self):
-        pass
+        someTimeStampFromGraph = 1405547020
+        graphNode = GraphNode()
+        dateTime = graphNode.cast_to_datetime(someTimeStampFromGraph)
+        prettyDate = dateTime.strftime(FORMAT_RFC1036)
+        timeStamp = mktime(dateTime.timetuple())
+        self.assertIsInstance(dateTime, datetime)
+        self.assertEqual('Wed, 16 Jul 14 23:43:40 +0200', prettyDate)
+        self.assertEqual(1405547020, timeStamp)
+
+    def testAGraphDateStringCanBeConvertedToADateTimeObject(self):
+        someDateStringFromGraph = '2014-07-15T03:44:53+0000'
+        graphNode = GraphNode()
+        dateTime = graphNode.cast_to_datetime(someDateStringFromGraph)
+        prettyDate = dateTime.strftime(FORMAT_RFC1036)
+        timeStamp = mktime(dateTime.timetuple())
+        self.assertIsInstance(dateTime, datetime)
+        self.assertEqual('Tue, 15 Jul 14 03:44:53 +0000', prettyDate)
+        # TODO python timestamp does not care about TZ it seems
+        self.assertEqual(1405395893, timeStamp + 3600)
+
+    def testUncastingAGraphNodeWillUncastTheDateTimeObject(self):
+        collectionOne = GraphNode(['foo', 'bar'])
+        collectionTwo = GraphNode({
+            'id': '123',
+            'date': dateutil.parser.parse('2014-07-15T03:44:53+0000'),
+            'some_collection': collectionOne,
+        })
+        uncastArray = collectionTwo.uncast_items()
+        self.assertEqual({
+            'id': '123',
+            'date': '2014-07-15T03:44:53+0000',
+            'some_collection': ['foo', 'bar'],
+        }, uncastArray)
+
+    def testGettingGraphNodeAsAnArrayWillNotUncastTheDateTimeObject(self):
+        collection = GraphNode({
+            'id': '123',
+            'date': dateutil.parser.parse('2014-07-15T03:44:53+0000'),
+        })
+        collectionAsArray = collection.as_array()
+        self.assertIsInstance(collectionAsArray['date'], datetime)
+
+    def testReturningACollectionAsJasonWillSafelyRepresentDateTimes(self):
+        collection = GraphNode({
+            'id': '123',
+            'date': dateutil.parser.parse('2014-07-15T03:44:53+0000'),
+        })
+        collectionAsString = collection.as_json()
+        self.assertEqual('{"date": "2014-07-15T03:44:53+0000", "id": "123"}', collectionAsString)
