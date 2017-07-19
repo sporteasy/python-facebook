@@ -21,19 +21,19 @@ class RequestUrlEncodedTest(PythonFacebookTestCase):
         message = RequestBodyUrlEncoded(OrderedDict({
             'faz': [1, 2, 3],
             'foo': 'bar',
-            'targeting': {
+            'targeting': OrderedDict({
                 'age_min': 13,
                 'countries': 'US,GB',
-            },
-            'call_to_action': {
+            }),
+            'call_to_action': OrderedDict({
                 'type': 'LEARN_MORE',
-                'value': {
+                'value': OrderedDict({
                     'link': 'http://example.com',
                     'sponsorship': {
                         'image': 'http://example.com/bar.jpg',
                     },
-                },
-            },
+                }),
+            }),
         }))
         body = message.get_body()
         self.assertEqual(
