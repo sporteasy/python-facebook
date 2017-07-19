@@ -22,7 +22,7 @@ class RequestBodyMultipartTest(PythonFacebookTestCase):
         expected_body += "Content-Disposition: form-data; name=\"scawy_vawues\"\r\n\r\n@FooBar is a real twitter handle.\r\n"
         expected_body += "--foo_boundary--\r\n"
         self.assertEquals(expected_body, body)
-    
+
     def testCanProperlyEncodeFilesAndParams(self):
         # file = FacebookFile('__DIR__' + '/../foo.txt')
         # message = RequestBodyMultipart(params={
@@ -43,11 +43,11 @@ class RequestBodyMultipartTest(PythonFacebookTestCase):
         # Not implemented yet
         #
         pass
-    
+
     def testSupportsMultidimensionalParams(self):
         message = RequestBodyMultipart(params=OrderedDict({
+            'faz': [1, 2, 3],
             'foo': 'bar',
-            'faz': [1,2,3],
             'targeting': OrderedDict({
                 'countries': 'US,GB',
                 'age_min': 13,
