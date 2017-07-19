@@ -21,23 +21,23 @@ class FacebookTestCase(unittest.TestCase):
         'app_secret': 'foo_secret'
     }
 
-    # unset value so there is no fallback to test expected Exception
-    @mock.patch.dict(os.environ, {Facebook.APP_ID_ENV_NAME: ''})
-    def test_instantiating_without_app_id_raises(self):
-        config = {
-            'app_secret': 'foo_secret'
-        }
-        with self.assertRaises(FacebookSDKException):
-            Facebook(config)
-
-    # unset value so there is no fallback to test expected Exception
-    @mock.patch.dict(os.environ, {Facebook.APP_SECRET_ENV_NAME: ''})
-    def test_instantiating_without_app_secret_raises(self):
-        config = {
-            'app_id': 'foo_id'
-        }
-        with self.assertRaises(FacebookSDKException):
-            Facebook(config)
+    # # unset value so there is no fallback to test expected Exception
+    # @mock.patch.dict(os.environ, {Facebook.APP_ID_ENV_NAME: ''})
+    # def test_instantiating_without_app_id_raises(self):
+    #     config = {
+    #         'app_secret': 'foo_secret'
+    #     }
+    #     with self.assertRaises(FacebookSDKException):
+    #         Facebook(config)
+    #
+    # # unset value so there is no fallback to test expected Exception
+    # @mock.patch.dict(os.environ, {Facebook.APP_SECRET_ENV_NAME: ''})
+    # def test_instantiating_without_app_secret_raises(self):
+    #     config = {
+    #         'app_id': 'foo_id'
+    #     }
+    #     with self.assertRaises(FacebookSDKException):
+    #         Facebook(config)
 
     def test_the_url_handler_will_default_to_the_facebook_implementation(self):
         fb = Facebook(self.config)
