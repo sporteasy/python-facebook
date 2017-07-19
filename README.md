@@ -1,6 +1,8 @@
 Python Facebook
 ---------------
 
+[![Build Status](https://travis-ci.org/sporteasy/python-facebook.svg?branch=master)](https://travis-ci.org/sporteasy/python-facebook)
+
 This repository contains an open source Python library that allows you to access Facebook
 Platform from your Python app.
 
