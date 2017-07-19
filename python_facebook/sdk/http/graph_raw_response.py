@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 
 import re
 
+from requests.structures import CaseInsensitiveDict
+
 
 class GraphRawResponse(object):
 
@@ -12,7 +14,7 @@ class GraphRawResponse(object):
         if isinstance(http_status_code, (int, long)):
             self.http_response_code = int(http_status_code)
 
-        if isinstance(headers, dict):
+        if isinstance(headers, (dict, CaseInsensitiveDict)):
             self.headers = headers
         else:
             self.__set_headers_from_string(headers)
