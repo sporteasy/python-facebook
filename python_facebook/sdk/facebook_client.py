@@ -63,7 +63,7 @@ class FacebookClient(object):
             request.set_headers({
                 'Content-Type': 'application/x-www-form-urlencoded'
             })
-        return url, request.get_method(), request.get_headers(), request.get_body()
+        return url, request.get_method(), request.get_headers(), request_body.get_body()
 
     def send_request(self, request):
         if isinstance(request, FacebookRequest):
