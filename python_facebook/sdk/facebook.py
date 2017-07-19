@@ -108,9 +108,10 @@ class Facebook(object):
     def set_default_access_token(self, access_token):
         if isinstance(access_token, str):
             self.default_access_token = AccessToken(access_token)
+            return
         elif isinstance(access_token, AccessToken):
             self.default_access_token = access_token
-
+            return
         raise ValueError('The default access token must be of type "string" or AccessToken')
 
     def get_default_graph_version(self):
