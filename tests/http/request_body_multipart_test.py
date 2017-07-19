@@ -48,19 +48,19 @@ class RequestBodyMultipartTest(PythonFacebookTestCase):
         message = RequestBodyMultipart(params=OrderedDict({
             'foo': 'bar',
             'faz': [1,2,3],
-            'targeting': {
+            'targeting': OrderedDict({
                 'countries': 'US,GB',
                 'age_min': 13,
-            },
-            'call_to_action': {
+            }),
+            'call_to_action': OrderedDict({
                 'type': 'LEARN_MORE',
-                'value': {
+                'value': OrderedDict({
                     'link': 'http://example.com',
                     'sponsorship': {
                         'image': 'http://example.com/bar.jpg',
                     },
-                },
-            },
+                }),
+            }),
         }), boundary='foo_boundary')
         body = message.get_body()
         expected_body = "--foo_boundary\r\n"
