@@ -104,8 +104,8 @@ class GraphNodeTestCase(PythonFacebookTestCase):
 
     def testReturningACollectionAsJasonWillSafelyRepresentDateTimes(self):
         collection = GraphNode(OrderedDict({
-            'id': '123',
             'date': dateutil.parser.parse('2014-07-15T03:44:53+0000'),
+            'id': '123',
         }))
         collectionAsString = collection.as_json()
         self.assertEqual('{"date": "2014-07-15T03:44:53+0000", "id": "123"}', collectionAsString)
