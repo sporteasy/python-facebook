@@ -17,7 +17,9 @@ os:
 #  global:
 #    - NEWEST_PYTHON=3.4
 
-install: pip install tox-travis
+install:
+  - pip install setuptools
+  - pip install tox-travis
 #    - pip install tox>=1.8
 
 script: tox
