@@ -21,3 +21,6 @@ install:
 
 script:
   - tox
+
+notifications:
+  email: false
