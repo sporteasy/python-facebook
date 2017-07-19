@@ -15,7 +15,9 @@ class RequestUrlEncodedTest(PythonFacebookTestCase):
             'scawy_vawues': '@FooBar is a real twitter handle.',
         }))
         body = message.get_body()
-        self.assertEqual('foo=bar&scawy_vawues=%40FooBar+is+a+real+twitter+handle.', body)
+
+        expected = sorted('foo=bar&scawy_vawues=%40FooBar+is+a+real+twitter+handle.'.split('&'))
+        self.assertEqual(expected, sorted(body.split('&')))
 
     def testSupportsMultidimensionalParams(self):
         message = RequestBodyUrlEncoded(OrderedDict({
