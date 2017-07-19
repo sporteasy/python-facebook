@@ -4,18 +4,21 @@ import os
 import unittest
 
 from python_facebook.sdk.authentication.access_token import AccessToken
-from python_facebook.sdk.exceptions.facebook_sdk_exception import FacebookSDKException
+from python_facebook.sdk.exceptions.facebook_sdk_exception import \
+    FacebookSDKException
 from python_facebook.sdk.facebook import Facebook
 from python_facebook.sdk.facebook_client import FacebookClient
-from python_facebook.sdk.url.facebook_url_detection_handler import FacebookUrlDetectionHandler
-from tests.fixtures.foo_bar_pseudo_random_string_generator import FooBarPseudoRandomStringGenerator
+from python_facebook.sdk.url.facebook_url_detection_handler import \
+    FacebookUrlDetectionHandler
+from tests.fixtures.foo_bar_pseudo_random_string_generator import \
+    FooBarPseudoRandomStringGenerator
 from tests.fixtures.foo_client_interface import FooClientInterface
-from tests.fixtures.foo_persistent_data_interface import FooPersistentDataInterface
+from tests.fixtures.foo_persistent_data_interface import \
+    FooPersistentDataInterface
 from tests.fixtures.foo_url_detection_interface import FooUrlDetectionInterface
 
 
 class FacebookTestCase(unittest.TestCase):
-
     config = {
         'app_id': '1337',
         'app_secret': 'foo_secret'
@@ -41,7 +44,8 @@ class FacebookTestCase(unittest.TestCase):
 
     def test_the_url_handler_will_default_to_the_facebook_implementation(self):
         fb = Facebook(self.config)
-        self.assertIsInstance(fb.get_url_detection_handler(), FacebookUrlDetectionHandler)
+        self.assertIsInstance(fb.get_url_detection_handler(),
+                              FacebookUrlDetectionHandler)
 
     def test_an_access_token_can_be_set_as_astring(self):
         fb = Facebook(self.config)
@@ -88,16 +92,21 @@ class FacebookTestCase(unittest.TestCase):
             'http_client_handler': FooClientInterface(),
             'persistent_data_handler': FooPersistentDataInterface(),
             'url_detection_handler': FooUrlDetectionInterface(),
-            'pseudo_random_string_generator': FooBarPseudoRandomStringGenerator()
+            'pseudo_random_string_generator':
+                FooBarPseudoRandomStringGenerator()
         })
 
         fb = Facebook(config)
 
         self.assertIsInstance(fb.get_client().get_http_client_handler(),
                               FooClientInterface)
-        self.assertIsInstance(fb.get_redirect_login_helper().get_persistent_data_handler(),
-                              FooPersistentDataInterface)
-        self.assertIsInstance(fb.get_redirect_login_helper().get_url_detection_handler(),
-                              FooUrlDetectionInterface)
-        self.assertIsInstance(fb.get_redirect_login_helper().get_pseudo_random_string_generator(),
-                              FooBarPseudoRandomStringGenerator)
+        self.assertIsInstance(
+            fb.get_redirect_login_helper().get_persistent_data_handler(),
+            FooPersistentDataInterface)
+        self.assertIsInstance(
+            fb.get_redirect_login_helper().get_url_detection_handler(),
+            FooUrlDetectionInterface)
+        self.assertIsInstance(
+            fb.get_redirect_login_helper()
+            .get_pseudo_random_string_generator(),
+            FooBarPseudoRandomStringGenerator)

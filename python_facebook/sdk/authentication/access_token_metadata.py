@@ -1,15 +1,16 @@
 from datetime import datetime
 
-from python_facebook.sdk.exceptions.facebook_sdk_exception import FacebookSDKException
+from python_facebook.sdk.exceptions.facebook_sdk_exception import \
+    FacebookSDKException
 
 
 class AccessTokenMetadata(object):
-
     date_properties = ['expires_at', 'issued_at']
 
     def __init__(self, metadata):
         if not metadata.get('data'):
-            raise FacebookSDKException('Unexpected debug token response data.', 401)
+            raise FacebookSDKException('Unexpected debug token response data.',
+                                       401)
 
         self.metadata = metadata['data'].copy()
         self.cast_timestamps_to_datetime()
@@ -82,18 +83,23 @@ class AccessTokenMetadata(object):
 
     def validate_app_id(self, app_id):
         if self.get_app_id() != app_id:
-            raise FacebookSDKException('Access token metadata contains unexpected app ID.', 401)
+            raise FacebookSDKException(
+                'Access token metadata contains unexpected app ID.', 401)
 
     def validate_user_id(self, user_id):
         if self.get_user_id() != user_id:
-            raise FacebookSDKException('Access token metadata contains unexpected user ID.', 401)
+            raise FacebookSDKException(
+                'Access token metadata contains unexpected user ID.', 401)
 
     def validate_expiration(self):
         if not isinstance(self.get_expires_at(), datetime):
             return
 
         if self.get_expires_at() < datetime.now():
-            raise FacebookSDKException('Inspection of access token metadata shows that the access token has expired.', 401)
+            raise FacebookSDKException(
+                'Inspection of access token metadata shows that the access '
+                'token has expired.',
+                401)
 
     def convert_timestamp_to_datetime(self, timestamp):
         return datetime.fromtimestamp(float(timestamp))
@@ -101,4 +107,5 @@ class AccessTokenMetadata(object):
     def cast_timestamps_to_datetime(self):
         for key in self.date_properties:
             if self.metadata.get(key) and self.metadata.get(key) != 0:
-                self.metadata[key] = self.convert_timestamp_to_datetime(self.metadata[key])
+                self.metadata[key] = self.convert_timestamp_to_datetime(
+                    self.metadata[key])

@@ -5,13 +5,13 @@ from time import mktime
 import dateutil
 
 from tests import PythonFacebookTestCase
-from python_facebook.sdk.graph_nodes.graph_node import GraphNode
 
+from python_facebook.sdk.graph_nodes.graph_node import GraphNode
 
 FORMAT_RFC1036 = '%a, %d %b %y %H:%M:%S %z'
 
-class GraphNodeTestCase(PythonFacebookTestCase):
 
+class GraphNodeTestCase(PythonFacebookTestCase):
     def test_an_empty_base_graph_node_can_instantiate(self):
         graph_node = GraphNode()
         backing_data = graph_node.as_array()
@@ -28,36 +28,49 @@ class GraphNodeTestCase(PythonFacebookTestCase):
         graph_node = GraphNode()
 
         # should pass
-        should_pass = graph_node.is_iso8601_date_string('1985-10-26T01:21:00+0000')
-        self.assertTrue(should_pass, 'Expected the valid ISO 8601 formatted date from Back To The Future to pass.')
+        should_pass = graph_node.is_iso8601_date_string(
+            '1985-10-26T01:21:00+0000')
+        self.assertTrue(should_pass,
+                        'Expected the valid ISO 8601 formatted date from '
+                        'Back To The Future to pass.')
 
         should_pass = graph_node.is_iso8601_date_string('1999-12-31')
-        self.assertTrue(should_pass, 'Expected the valid ISO 8601 formatted date to party like it\'s 1999.')
+        self.assertTrue(should_pass,
+                        'Expected the valid ISO 8601 formatted date to '
+                        'party like it\'s 1999.')
 
         should_pass = graph_node.is_iso8601_date_string('2009-05-19T14:39Z')
-        self.assertTrue(should_pass, 'Expected the valid ISO 8601 formatted date to pass.')
+        self.assertTrue(should_pass,
+                        'Expected the valid ISO 8601 formatted date to pass.')
 
         should_pass = graph_node.is_iso8601_date_string('2014-W36')
-        self.assertTrue(should_pass, 'Expected the valid ISO 8601 formatted date to pass.')
+        self.assertTrue(should_pass,
+                        'Expected the valid ISO 8601 formatted date to pass.')
 
         should_pass = graph_node.is_iso8601_date_string('2014-W06')
-        self.assertTrue(should_pass, 'Expected the valid ISO 8601 formatted date to pass.')
+        self.assertTrue(should_pass,
+                        'Expected the valid ISO 8601 formatted date to pass.')
 
         should_pass = graph_node.is_iso8601_date_string('2014-W51')
-        self.assertTrue(should_pass, 'Expected the valid ISO 8601 formatted date to pass.')
+        self.assertTrue(should_pass,
+                        'Expected the valid ISO 8601 formatted date to pass.')
 
         # should fail
         should_fail = graph_node.is_iso8601_date_string('2009-05-19T14a39r')
-        self.assertFalse(should_fail, 'Expected the invalid ISO 8601 format to fail.')
+        self.assertFalse(should_fail,
+                         'Expected the invalid ISO 8601 format to fail.')
 
         should_fail = graph_node.is_iso8601_date_string('foo_time')
-        self.assertFalse(should_fail, 'Expected the invalid ISO 8601 format to fail.')
+        self.assertFalse(should_fail,
+                         'Expected the invalid ISO 8601 format to fail.')
 
         should_fail = graph_node.is_iso8601_date_string('2014-W53')
-        self.assertFalse(should_fail, 'Expected the invalid ISO 8601 format to fail.')
+        self.assertFalse(should_fail,
+                         'Expected the invalid ISO 8601 format to fail.')
 
         should_fail = graph_node.is_iso8601_date_string('2014-W3')
-        self.assertFalse(should_fail, 'Expected the invalid ISO 8601 format to fail.')
+        self.assertFalse(should_fail,
+                         'Expected the invalid ISO 8601 format to fail.')
 
     def test_a_time_stamp_can_be_converted_to_adate_time_object(self):
         someTimeStampFromGraph = 1405547020
@@ -108,4 +121,5 @@ class GraphNodeTestCase(PythonFacebookTestCase):
             'id': '123',
         }))
         collectionAsString = collection.as_json()
-        self.assertEqual('{"date": "2014-07-15T03:44:53+0000", "id": "123"}', collectionAsString)
+        self.assertEqual('{"date": "2014-07-15T03:44:53+0000", "id": "123"}',
+                         collectionAsString)

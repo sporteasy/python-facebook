@@ -7,7 +7,8 @@ class RequestBody(object):
         raise NotImplementedError
 
     def _build_nested_params(self, params, output, base_key=None):
-        # build params with key looking like PHP ones, eg `form[field1][field2][field3]`
+        # build params with key looking like PHP ones,
+        # eg `form[field1][field2][field3]`
         for key, value in params.items():
             if isinstance(value, (basestring, int, long)):
                 if base_key:

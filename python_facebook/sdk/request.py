@@ -2,12 +2,16 @@
 from python_facebook.sdk.const import VERSION
 from python_facebook.sdk.const import DEFAULT_GRAPH_VERSION
 from python_facebook.sdk.authentication.access_token import AccessToken
-from python_facebook.sdk.exceptions.facebook_sdk_exception import FacebookSDKException
+from python_facebook.sdk.exceptions.facebook_sdk_exception import \
+    FacebookSDKException
 from python_facebook.sdk.file_upload.facebook_file import FacebookFile
 from python_facebook.sdk.file_upload.facebook_video import FacebookVideo
-from python_facebook.sdk.http.request_body_multipart import RequestBodyMultipart
-from python_facebook.sdk.http.request_body_url_encoded import RequestBodyUrlEncoded
-from python_facebook.sdk.url.facebook_url_manipulator import FacebookUrlManipulator
+from python_facebook.sdk.http.request_body_multipart import \
+    RequestBodyMultipart
+from python_facebook.sdk.http.request_body_url_encoded import \
+    RequestBodyUrlEncoded
+from python_facebook.sdk.url.facebook_url_manipulator import \
+    FacebookUrlManipulator
 
 try:
     from simplejson import JSONDecodeError
@@ -17,7 +21,8 @@ except ImportError:
 
 
 class FacebookRequest(object):
-    def __init__(self, app=None, access_token=None, method=None, endpoint=None, params=None, e_tag=None,
+    def __init__(self, app=None, access_token=None, method=None, endpoint=None,
+                 params=None, e_tag=None,
                  graph_version=None):
         self.set_app(app)
         self.set_access_token(access_token)
@@ -42,8 +47,10 @@ class FacebookRequest(object):
         if not existing_access_token:
             self.set_access_token(access_token)
         elif access_token != existing_access_token:
-            raise FacebookSDKException('Access token mismatch. The access token provided in the FacebookRequest and '
-                                       'the one provided in the URL or POST params do not match.')
+            raise FacebookSDKException(
+                'Access token mismatch. The access token provided in the '
+                'FacebookRequest and the one provided in the URL or POST '
+                'params do not match.')
         return self
 
     def get_access_token(self):
@@ -91,7 +98,8 @@ class FacebookRequest(object):
 
         # Clean the token & app secret proof from the endpoint.
         filter_params = ['access_token', 'appsecret_proof']
-        self.endpoint = FacebookUrlManipulator.remove_params_from_url(endpoint, filter_params)
+        self.endpoint = FacebookUrlManipulator.remove_params_from_url(
+            endpoint, filter_params)
         return self
 
     def get_endpoint(self):
@@ -178,8 +186,9 @@ class FacebookRequest(object):
 
     def get_url(self):
         self.validate_method()
-        url = '{}{}'.format(FacebookUrlManipulator.force_slash_prefix(self.graph_version),
-                            FacebookUrlManipulator.force_slash_prefix(self.get_endpoint()))
+        url = '{}{}'.format(
+            FacebookUrlManipulator.force_slash_prefix(self.graph_version),
+            FacebookUrlManipulator.force_slash_prefix(self.get_endpoint()))
         # return self.get_endpoint()
         if self.method != 'POST':
             params = self.get_params()

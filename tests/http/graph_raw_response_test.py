@@ -6,7 +6,6 @@ from python_facebook.sdk.http.graph_raw_response import GraphRawResponse
 
 
 class GraphRawResponseTest(PythonFacebookTestCase):
-
     fakeRawProxyHeader = """HTTP/1.0 200 Connection established
     Proxy-agent: Kerio Control/7.1.1 build 1971\r\n\r\n"""
 
@@ -27,8 +26,12 @@ class GraphRawResponseTest(PythonFacebookTestCase):
         'Access-Control-Allow-Origin': '*',
     }
 
-    jsonFakeHeader = 'x-fb-ads-insights-throttle: {"app_id_util_pct": 0.00,"acc_id_util_pct": 0.00}'
-    jsonFakeHeaderAsArray = {'x-fb-ads-insights-throttle': '{"app_id_util_pct": 0.00,"acc_id_util_pct": 0.00}'}
+    jsonFakeHeader = 'x-fb-ads-insights-throttle: ' \
+                     '{"app_id_util_pct": 0.00,"acc_id_util_pct": 0.00}'
+    jsonFakeHeaderAsArray = {
+        'x-fb-ads-insights-throttle':
+            '{"app_id_util_pct": 0.00,"acc_id_util_pct": 0.00}'
+    }
 
     def testCanSetTheHeadersFromAnArray(self):
         myHeaders = {
@@ -47,7 +50,8 @@ class GraphRawResponseTest(PythonFacebookTestCase):
         self.assertEqual(200, httpResponseCode)
 
     def testWillIgnoreProxyHeaders(self):
-        response = GraphRawResponse(self.fakeRawProxyHeader + self.fakeRawHeader, '')
+        response = GraphRawResponse(
+            self.fakeRawProxyHeader + self.fakeRawHeader, '')
         headers = response.get_headers()
         httpResponseCode = response.get_http_response_code()
         self.assertEqual(self.fakeHeadersAsArray, headers)
@@ -56,5 +60,6 @@ class GraphRawResponseTest(PythonFacebookTestCase):
     def testCanTransformJsonHeaderValues(self):
         response = GraphRawResponse(self.jsonFakeHeader, '')
         headers = response.get_headers()
-        self.assertEqual(self.jsonFakeHeaderAsArray['x-fb-ads-insights-throttle'], headers[
-            'x-fb-ads-insights-throttle'])
+        self.assertEqual(
+            self.jsonFakeHeaderAsArray['x-fb-ads-insights-throttle'], headers[
+                'x-fb-ads-insights-throttle'])

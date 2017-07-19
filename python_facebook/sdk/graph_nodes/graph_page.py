@@ -39,7 +39,3 @@ class GraphPage(GraphNode):
 
     def get_perms(self):
         return self.get_field('perms')
-
-
-
-

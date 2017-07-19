@@ -6,7 +6,6 @@ from datetime import datetime, timedelta
 
 
 class AccessToken(object):
-
     def __init__(self, access_token, expires_at=0):
         """
         Create a new access token entity.
@@ -27,7 +26,8 @@ class AccessToken(object):
 
     def get_app_secret_proof(self, app_secret):
         # convert to str as hmac does not accept unicode
-        return hmac.new(str(app_secret), str(self.value), hashlib.sha256).hexdigest()
+        return hmac.new(str(app_secret), str(self.value),
+                        hashlib.sha256).hexdigest()
 
     def get_expires_at(self):
         return self.expires_at

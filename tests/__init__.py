@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-import unittest, os, time
+import unittest
+import os
+import time
 
 
 class PythonFacebookTestCase(unittest.TestCase):

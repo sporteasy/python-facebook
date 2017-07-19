@@ -1,7 +1,8 @@
 from importlib import import_module
 import json
 
-from python_facebook.sdk.exceptions.facebook_class_not_found_exception import ClassNotFoundException
+from python_facebook.sdk.exceptions.facebook_class_not_found_exception import \
+    ClassNotFoundException
 
 
 def get_class(path):
@@ -11,12 +12,15 @@ def get_class(path):
     try:
         mod_name, class_name = path.rsplit('.', 1)
         mod = import_module(mod_name, package='python_facebook.sdk')
-    except ImportError, e:
-        raise ClassNotFoundException(('Error importing class from path %s: "%s"' % (path, e)))
+    except ImportError as e:
+        raise ClassNotFoundException(
+            ('Error importing class from path {}: "{}"'.format(path, e)))
     try:
         class_ = getattr(mod, class_name)
     except AttributeError:
-        raise ClassNotFoundException(('Module "%s" does not define a "%s" class' % (mod_name, class_name)))
+        raise ClassNotFoundException(
+            ('Module "{}" does not define a "{}" class'.format(
+                mod_name, class_name)))
     return class_
 
 
@@ -36,7 +40,8 @@ def constant_time_compare(val1, val2):
 
 class JSONEncoder(json.JSONEncoder):
     def default(self, o):
-        from python_facebook.sdk.graph_nodes.base_graph_collection import BaseCollection
+        from python_facebook.sdk.graph_nodes.base_graph_collection import \
+            BaseCollection
 
         if isinstance(o, BaseCollection):
             return o.__repr__()

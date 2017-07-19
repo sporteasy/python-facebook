@@ -2,8 +2,8 @@
 from __future__ import unicode_literals
 from python_facebook.sdk.utils import JSONEncoder
 
-class BaseCollection(object):
 
+class BaseCollection(object):
     def __init__(self, items=None):
         if not items:
             items = {}
@@ -36,9 +36,11 @@ class BaseCollection(object):
     def as_array(self):
         if isinstance(self.items, dict):
             def get_array_value(value):
-                return value.as_array() if isinstance(value, BaseCollection) else value
+                return value.as_array() if isinstance(value, BaseCollection) \
+                    else value
 
-            return {key: get_array_value(value) for key, value in self.items.items()}
+            return {key: get_array_value(value) for key, value in
+                    self.items.items()}
         else:
             return self.items
 

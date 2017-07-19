@@ -14,7 +14,8 @@ class RequestBodyMultipart(RequestBody):
         self.boundary = boundary or self._uniqid()
 
     def _uniqid(self):
-        return hex(int(time()))[2:10] + hex(int(time()*1000000) % 0x100000)[2:7]
+        return hex(int(time()))[2:10] + \
+            hex(int(time() * 1000000) % 0x100000)[2:7]
 
     def get_body(self):
         body = ''
@@ -36,11 +37,15 @@ class RequestBodyMultipart(RequestBody):
         return self.boundary
 
     def __get_file_string(self, name, file):
-        return "--{}\r\nContent-Disposition: form-data; name=\"{}\"; filename=\"{}\"{}\r\n\r\n{}\r\n".format(
-            self.boundary, name, file.get_file_name(), self.__get_file_headers(file), file.get_contents())
+        file_string = "--{}\r\nContent-Disposition: form-data; name=\"{}\"; " \
+                      "filename=\"{}\"{}\r\n\r\n{}\r\n"
+        return file_string.format(
+            self.boundary, name, file.get_file_name(),
+            self.__get_file_headers(file), file.get_contents())
 
     def __get_param_string(self, name, value):
-        return "--{}\r\nContent-Disposition: form-data; name=\"{}\"\r\n\r\n{}\r\n".format(self.boundary, name, value)
+        return "--{}\r\nContent-Disposition: form-data; " \
+               "name=\"{}\"\r\n\r\n{}\r\n".format(self.boundary, name, value)
 
     def __get_nested_params(self, params):
         output = self._build_nested_params(params, OrderedDict())

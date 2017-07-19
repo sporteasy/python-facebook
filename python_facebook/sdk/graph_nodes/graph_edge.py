@@ -1,12 +1,14 @@
 import copy
 
-from python_facebook.sdk.exceptions.facebook_sdk_exception import FacebookSDKException
-from python_facebook.sdk.graph_nodes.base_graph_collection import BaseCollection
-from python_facebook.sdk.url.facebook_url_manipulator import FacebookUrlManipulator
+from python_facebook.sdk.exceptions.facebook_sdk_exception import \
+    FacebookSDKException
+from python_facebook.sdk.graph_nodes.base_graph_collection import \
+    BaseCollection
+from python_facebook.sdk.url.facebook_url_manipulator import \
+    FacebookUrlManipulator
 
 
 class GraphEdge(BaseCollection):
-
     def __init__(self, request, data=None, metadata=None,
                  parent_edge_endpoint=None, subclass_name=None):
         self.request = request
@@ -48,13 +50,16 @@ class GraphEdge(BaseCollection):
 
     def get_pagination_url(self, direction):
         self.validate_for_pagination()
-        if 'paging' in self.metadata and not self.metadata['paging'].get(direction):
+        if 'paging' in self.metadata and not self.metadata['paging'].get(
+                direction):
             return None
-        return FacebookUrlManipulator.base_graph_url_endpoint(self.metadata['paging'].get(direction))
+        return FacebookUrlManipulator.base_graph_url_endpoint(
+            self.metadata['paging'].get(direction))
 
     def validate_for_pagination(self):
         if self.request.get_method() != 'GET':
-            raise FacebookSDKException('You can only paginate on a GET request.', 720)
+            raise FacebookSDKException(
+                'You can only paginate on a GET request.', 720)
 
     def get_pagination_request(self, direction):
         page_url = self.get_pagination_url(direction)
@@ -83,4 +88,5 @@ class GraphEdge(BaseCollection):
             items = {key: callback(value) for key, value in self.items.items()}
         else:
             items = [callback(value) for value in self.items]
-        return GraphEdge(self.request, items, self.metadata, self.parent_edge_endpoint, self.subclass_name)
+        return GraphEdge(self.request, items, self.metadata,
+                         self.parent_edge_endpoint, self.subclass_name)

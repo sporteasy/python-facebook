@@ -2,7 +2,8 @@ import os
 
 
 class UrandomPseudoRandomStringGenerator(object):
-    ERROR_MESSAGE = 'Unable to generate a cryptographically secure pseudo-random string from /dev/urandom. '
+    ERROR_MESSAGE = 'Unable to generate a cryptographically secure ' \
+                    'pseudo-random string from /dev/urandom. '
 
     def get_pseudo_random_string(self, length):
         """

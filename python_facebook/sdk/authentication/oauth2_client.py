@@ -4,8 +4,10 @@ import urllib
 from python_facebook.sdk.const import VERSION
 from python_facebook.sdk.const import DEFAULT_GRAPH_VERSION
 from python_facebook.sdk.authentication.access_token import AccessToken
-from python_facebook.sdk.authentication.access_token_metadata import AccessTokenMetadata
-from python_facebook.sdk.exceptions.facebook_sdk_exception import FacebookSDKException
+from python_facebook.sdk.authentication.access_token_metadata import \
+    AccessTokenMetadata
+from python_facebook.sdk.exceptions.facebook_sdk_exception import \
+    FacebookSDKException
 from python_facebook.sdk.request import FacebookRequest
 
 
@@ -23,7 +25,8 @@ class OAuth2Client(object):
         return self.last_request
 
     def debug_token(self, access_token):
-        access_token = access_token.get_value() if isinstance(access_token, AccessToken) else access_token
+        access_token = access_token.get_value() \
+            if isinstance(access_token, AccessToken) else access_token
         params = {
             'input_token': access_token
         }
@@ -42,9 +45,11 @@ class OAuth2Client(object):
 
         return AccessTokenMetadata(metadata)
 
-    def get_authorization_url(self, redirect_url, state, scope=None, params=None, separator='&'):
+    def get_authorization_url(self, redirect_url, state, scope=None,
+                              params=None, separator='&'):
         """
-        Generates an authorization URL to begin the process of authenticating a user.
+        Generates an authorization URL to begin the process of
+        authenticating a user.
         """
         if not params:
             params = {}
@@ -61,8 +66,10 @@ class OAuth2Client(object):
             'scope': ','.join(scope)
         })
 
-        return self.BASE_AUTHORIZATION_URL + '/' + self.graph_version + '/dialog/oauth?' + \
-            urllib.urlencode(sorted(params.items()))
+        return '{}/{}/dialog/oauth?{}'.format(
+            self.BASE_AUTHORIZATION_URL,
+            self.graph_version,
+            urllib.urlencode(sorted(params.items())))
 
     def get_access_token_from_code(self, code, redirect_uri=''):
         """
@@ -78,25 +85,29 @@ class OAuth2Client(object):
         """
         Exchanges a short-lived access token with a long-lived access token.
         """
-        access_token = access_token.get_value() if isinstance(access_token, AccessToken) else access_token
+        access_token = access_token.get_value() \
+            if isinstance(access_token, AccessToken) else access_token
         params = {
             'grant_type': 'fb_exchange_token',
             'fb_exchange_token': access_token
         }
         return self.request_an_access_token(params)
 
-    def get_code_from_long_lived_access_token(self, access_token, redirect_uri=''):
+    def get_code_from_long_lived_access_token(self, access_token,
+                                              redirect_uri=''):
         """
         Get a valid code from an access token
         """
         params = {
             'redirect_uri': redirect_uri
         }
-        response = self.send_request_with_client_params('/oauth/client_code', params, access_token)
+        response = self.send_request_with_client_params('/oauth/client_code',
+                                                        params, access_token)
         data = response.get_decoded_body()
 
         if not data.get('code'):
-            raise FacebookSDKException('Code was not returned from Graph.', 401)
+            raise FacebookSDKException('Code was not returned from Graph.',
+                                       401)
 
         return data['code']
 
@@ -104,11 +115,13 @@ class OAuth2Client(object):
         """
         Send a request to the OAuth endpoint.
         """
-        response = self.send_request_with_client_params('/oauth/access_token', params)
+        response = self.send_request_with_client_params('/oauth/access_token',
+                                                        params)
         data = response.get_decoded_body()
 
         if not data.get('access_token'):
-            raise FacebookSDKException('Access token was not returned from Graph.', 401)
+            raise FacebookSDKException(
+                'Access token was not returned from Graph.', 401)
 
         # Graph returns two different key names for expiration time
         # on the same endpoint. Doh! :/
@@ -120,12 +133,14 @@ class OAuth2Client(object):
         elif data.get('expires_in'):
             # For exchanging a code for a short lived access token.
             # The expiration time in seconds will be returned as "expires_in".
-            # See: https://developers.facebook.com/docs/facebook-login/access-tokens#long-via-code
+            # See: https://developers.facebook.com/docs/facebook-login
+            # /access-tokens#long-via-code
             expires_at = time.time() + float(data['expires_in'])
 
         return AccessToken(data['access_token'], expires_at)
 
-    def send_request_with_client_params(self, endpoint, params, access_token=None):
+    def send_request_with_client_params(self, endpoint, params,
+                                        access_token=None):
         """
         Send a request to Graph with an app access token.
         """

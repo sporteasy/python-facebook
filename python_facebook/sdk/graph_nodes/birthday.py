@@ -5,9 +5,11 @@ class Birthday(object):
     """
     Birthday object to handle various Graph return formats
     """
+
     def __init__(self, datestring):
         """
-            Parses Graph birthday format to set indication flags, possible values:
+            Parses Graph birthday format to set indication flags,
+            possible values:
 
             MM/DD/YYYY
             MM/DD

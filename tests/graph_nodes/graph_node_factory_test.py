@@ -4,7 +4,8 @@ from __future__ import unicode_literals
 import json
 
 from tests import PythonFacebookTestCase
-from python_facebook.sdk.exceptions.facebook_sdk_exception import FacebookSDKException
+from python_facebook.sdk.exceptions.facebook_sdk_exception import \
+    FacebookSDKException
 from python_facebook.sdk.graph_nodes.graph_edge import GraphEdge
 from python_facebook.sdk.graph_nodes.graph_node import GraphNode
 from python_facebook.sdk.graph_nodes.graph_node_factory import GraphNodeFactory
@@ -20,7 +21,9 @@ class GraphNodeFactoryTest(PythonFacebookTestCase):
     def setUp(self):
         super(GraphNodeFactoryTest, self).setUp()
         app = FacebookApp('123', 'foo_app_secret')
-        self.request = FacebookRequest(app, 'foo_token', 'GET', '/me/photos?keep=me', {'foo': 'bar'}, 'foo_eTag', 'v1337')
+        self.request = FacebookRequest(app, 'foo_token', 'GET',
+                                       '/me/photos?keep=me', {'foo': 'bar'},
+                                       'foo_eTag', 'v1337')
 
     def testAValidGraphNodeResponseWillNotThrow(self):
         data = '{"id":"123","name":"foo"}'
@@ -29,14 +32,16 @@ class GraphNodeFactoryTest(PythonFacebookTestCase):
         factory.validate_response_castable_as_graph_node()
 
     def testANonGraphNodeResponseWillThrow(self):
-        data = '{"data":[{"id":"123","name":"foo"},{"id":"1337","name":"bar"}]}'
+        data = '{"data":[{"id":"123","name":"foo"},' \
+               '{"id":"1337","name":"bar"}]}'
         res = FacebookResponse(self.request, data)
         factory = GraphNodeFactory(res)
         with self.assertRaises(FacebookSDKException):
             factory.validate_response_castable_as_graph_node()
 
     def testAValidGraphEdgeResponseWillNotThrow(self):
-        data = '{"data":[{"id":"123","name":"foo"},{"id":"1337","name":"bar"}]}'
+        data = '{"data":[{"id":"123","name":"foo"},' \
+               '{"id":"1337","name":"bar"}]}'
         res = FacebookResponse(self.request, data)
         factory = GraphNodeFactory(res)
         factory.validate_response_castable_as_graph_edge()
@@ -50,24 +55,35 @@ class GraphNodeFactoryTest(PythonFacebookTestCase):
 
     def testOnlyNumericArraysAreCastableAsAGraphEdge(self):
         shouldPassOne = GraphNodeFactory.is_castable_as_graph_edge({})
-        shouldPassTwo = GraphNodeFactory.is_castable_as_graph_edge(['foo', 'bar'])
-        shouldFail = GraphNodeFactory.is_castable_as_graph_edge({'faz': 'baz'})
-        self.assertTrue(shouldPassOne, 'Expected the given array to be castable as a GraphEdge.')
-        self.assertTrue(shouldPassTwo, 'Expected the given array to be castable as a GraphEdge.')
-        self.assertFalse(shouldFail, 'Expected the given array to not be castable as a GraphEdge.')
+        shouldPassTwo = GraphNodeFactory.is_castable_as_graph_edge(
+            ['foo', 'bar'])
+        shouldFail = GraphNodeFactory.is_castable_as_graph_edge(
+            {'faz': 'baz'})
+        self.assertTrue(
+            shouldPassOne,
+            'Expected the given array to be castable as a GraphEdge.')
+        self.assertTrue(
+            shouldPassTwo,
+            'Expected the given array to be castable as a GraphEdge.')
+        self.assertFalse(
+            shouldFail,
+            'Expected the given array to not be castable as a GraphEdge.')
 
     def testCastingAsASubClassObjectWillInstantiateTheSubClass(self):
         data = '{"id":"123","name":"foo"}'
         res = FacebookResponse(self.request, data)
         factory = GraphNodeFactory(res)
-        mySubClassObject = factory.make_graph_node('tests.fixtures.my_foo_graph_node.MyFooGraphNode')
+        mySubClassObject = factory.make_graph_node(
+            'tests.fixtures.my_foo_graph_node.MyFooGraphNode')
         self.assertIsInstance(mySubClassObject, MyFooGraphNode)
 
     def testASubClassMappingWillAutomaticallyInstantiateSubClass(self):
-        data = '{"id":"123","name":"Foo Name","foo_object":{"id":"1337","name":"Should be sub classed!"}}'
+        data = '{"id":"123","name":"Foo Name",' \
+               '"foo_object":{"id":"1337","name":"Should be sub classed!"}}'
         res = FacebookResponse(self.request, data)
         factory = GraphNodeFactory(res)
-        mySubClassObject = factory.make_graph_node('tests.fixtures.my_foo_graph_node.MyFooGraphNode')
+        mySubClassObject = factory.make_graph_node(
+            'tests.fixtures.my_foo_graph_node.MyFooGraphNode')
         fooObject = mySubClassObject.get_field('foo_object')
         self.assertIsInstance(mySubClassObject, MyFooGraphNode)
         self.assertIsInstance(fooObject, MyFooSubClassGraphNode)
@@ -83,7 +99,8 @@ class GraphNodeFactoryTest(PythonFacebookTestCase):
         })
         res = FacebookResponse(self.request, data)
         factory = GraphNodeFactory(res)
-        mySubClassObject = factory.make_graph_node('tests.fixtures.my_foo_graph_node.MyFooGraphNode')
+        mySubClassObject = factory.make_graph_node(
+            'tests.fixtures.my_foo_graph_node.MyFooGraphNode')
         unknownObject = mySubClassObject.get_field('unknown_object')
         self.assertIsInstance(mySubClassObject, MyFooGraphNode)
         self.assertIsInstance(unknownObject, GraphNode)
@@ -320,7 +337,8 @@ class GraphNodeFactoryTest(PythonFacebookTestCase):
         childGraphEdgeOne = graphEdge[0]['likes'].get_parent_graph_edge()
         childGraphEdgeTwo = graphEdge[1]['likes'].get_parent_graph_edge()
         childGraphEdgeThree = graphEdge[1]['photos'].get_parent_graph_edge()
-        childGraphEdgeFour = graphEdge[1]['photos'][0]['likes'].get_parent_graph_edge()
+        childGraphEdgeFour = graphEdge[1]['photos'][0][
+            'likes'].get_parent_graph_edge()
         self.assertIsNone(topGraphEdge)
         self.assertEquals('/111/likes', childGraphEdgeOne)
         self.assertEquals('/222/likes', childGraphEdgeTwo)

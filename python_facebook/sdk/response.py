@@ -2,9 +2,9 @@
 import json
 import sys
 
-from python_facebook.sdk.exceptions.facebook_response_exception import FacebookResponseException
+from python_facebook.sdk.exceptions.facebook_response_exception import \
+    FacebookResponseException
 from python_facebook.sdk.graph_nodes.graph_node_factory import GraphNodeFactory
-
 
 if sys.version_info >= (3, 0):
     import urllib.parse as urlparse
@@ -13,7 +13,6 @@ else:
 
 
 class QueryStringDictFormatter(object):
-
     def __init__(self, response_dict):
         self.response_dict = {}
         for key, val in response_dict.items():
@@ -28,7 +27,8 @@ class QueryStringDictFormatter(object):
 
 
 class FacebookResponse(object):
-    def __init__(self, request, body=None, http_status_code=None, headers=None):
+    def __init__(self, request, body=None, http_status_code=None,
+                 headers=None):
         self.request = request
         self.body = body
         self.http_status_code = http_status_code
@@ -100,7 +100,8 @@ class FacebookResponse(object):
             self.decoded_body = {}
             try:
                 self.decoded_body = urlparse.parse_qs(self.body)
-                self.decoded_body = {key: val[0] for key, val in self.decoded_body.items()}
+                self.decoded_body = {key: val[0] for key, val in
+                                     self.decoded_body.items()}
             except ValueError:
                 if is_bool(self.body):
                     self.decoded_body = {'success': to_boolean(self.body)}

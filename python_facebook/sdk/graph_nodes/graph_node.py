@@ -1,11 +1,11 @@
-import datetime
-import json
+from datetime import datetime
 import re
 from tzlocal import get_localzone
 
 from dateutil.parser import parse as date_parse
 
-from python_facebook.sdk.graph_nodes.base_graph_collection import BaseCollection
+from python_facebook.sdk.graph_nodes.base_graph_collection import \
+    BaseCollection
 from python_facebook.sdk.graph_nodes.birthday import Birthday
 from python_facebook.sdk.utils import JSONEncoder
 
@@ -47,7 +47,10 @@ class GraphNode(BaseCollection):
 
     def uncast_items(self):
         items = self.as_array()
-        return {k: v.strftime(DATE_FORMAT) if isinstance(v, datetime.datetime) else v for k, v in items.items()}
+        return {
+            k: v.strftime(DATE_FORMAT) if isinstance(v, datetime) else v
+            for k, v in items.items()
+        }
 
     def as_json(self, **kwargs):
         """
@@ -56,21 +59,16 @@ class GraphNode(BaseCollection):
         return JSONEncoder().encode(self.uncast_items())
 
     def is_iso8601_date_string(self, string):
-        """
-        Detects an ISO 8601 formatted string.
-
-        @see https://developers.facebook.com/docs/graph-api/using-graph-api/#readmodifiers
-        @see http://www.cl.cam.ac.uk/~mgk25/iso-time.html
-        @see http://en.wikipedia.org/wiki/ISO_8601
-        """
         # Using a python shortcut with dateutil
         # Replace the insane PHP regex by a try/except with dateutil.parse
-        # Difference with the original version: It will accept ISO 8601, RFC 3339, and more
+        # Difference with the original version: It will accept ISO 8601,
+        # RFC 3339, and more
         try:
             date_parse(string)
             return True
         except ValueError:
-            # date_parse raises for dates like 2014-W36, so let's give him another chance
+            # date_parse raises for dates like 2014-W36, so let's give him
+            # another chance
             pattern = '^\d{4}\-W([0-4][0-9]|5[0-2])$'
             return re.match(pattern, string) is not None
 
@@ -94,8 +92,9 @@ class GraphNode(BaseCollection):
         Casts a date value from Graph to DateTime.
         """
         if isinstance(value, int):
-            div = 1e3 if len(str(value)) == 13 else 1   # if len is 13, we got microseconds
-            dt = datetime.datetime.fromtimestamp(value / div)
+            div = 1e3 if len(
+                str(value)) == 13 else 1  # if len is 13, we got microseconds
+            dt = datetime.fromtimestamp(value / div)
         else:
             dt = date_parse(value)
         if dt.tzinfo is None:
@@ -111,4 +110,3 @@ class GraphNode(BaseCollection):
     @classmethod
     def get_object_map(cls):
         return cls.graph_object_map
-

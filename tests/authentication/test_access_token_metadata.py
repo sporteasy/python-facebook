@@ -2,8 +2,10 @@ import datetime
 import time
 
 from tests import PythonFacebookTestCase
-from python_facebook.sdk.authentication.access_token_metadata import AccessTokenMetadata
-from python_facebook.sdk.exceptions.facebook_sdk_exception import FacebookSDKException
+from python_facebook.sdk.authentication.access_token_metadata import \
+    AccessTokenMetadata
+from python_facebook.sdk.exceptions.facebook_sdk_exception import \
+    FacebookSDKException
 
 
 class AccessTokenMetadataTestCase(PythonFacebookTestCase):
@@ -48,12 +50,14 @@ class AccessTokenMetadataTestCase(PythonFacebookTestCase):
         self.assertEqual('190', metadata.get_error_code())
         self.assertEqual('Foo error message.', metadata.get_error_message())
         self.assertEqual('463', metadata.get_error_subcode())
-        self.assertFalse(metadata.get_is_valid(), 'Expected the access token to not be valid')
+        self.assertFalse(metadata.get_is_valid(),
+                         'Expected the access token to not be valid')
         self.assertEqual('iphone-sso', metadata.get_sso())
         self.assertEqual('rerequest', metadata.get_auth_type())
         self.assertEqual('no-replicatey', metadata.get_auth_nonce())
         self.assertEqual('1000', metadata.get_profile_id())
-        self.assertEqual(['public_profile', 'basic_info', 'user_friends'], metadata.get_scopes())
+        self.assertEqual(['public_profile', 'basic_info', 'user_friends'],
+                         metadata.get_scopes())
         self.assertEqual('1337', metadata.get_user_id())
 
     def test_invalid_metadata_will_throw(self):
