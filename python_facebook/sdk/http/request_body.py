@@ -14,7 +14,7 @@ class RequestBody(object):
                 return isinstance(_value, (basestring, int, long))
             except NameError:
                 # python3 does not supports basestring
-                return isinstance(_value, (str, int, long))
+                return isinstance(_value, (str, int))
 
         for key, value in params.items():
             if _check_type(value):

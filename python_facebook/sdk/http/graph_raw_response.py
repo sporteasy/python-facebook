@@ -11,7 +11,15 @@ class GraphRawResponse(object):
     def __init__(self, headers, body, http_status_code=None):
         self.headers = {}
         self.http_response_code = None
-        if isinstance(http_status_code, (int, long)):
+
+        def _check_type(_http_status_code):
+            try:
+                return isinstance(_http_status_code, (int, long))
+            except NameError:
+                # python3 does not supports long
+                return isinstance(_http_status_code, int)
+
+        if _check_type(http_status_code):
             self.http_response_code = int(http_status_code)
 
         if isinstance(headers, (dict, CaseInsensitiveDict)):
