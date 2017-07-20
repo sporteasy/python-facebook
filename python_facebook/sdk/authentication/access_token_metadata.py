@@ -9,7 +9,8 @@ class AccessTokenMetadata(object):
 
     def __init__(self, metadata):
         if not metadata.get('data'):
-            raise FacebookSDKException('Unexpected debug token response data.',
+            raise FacebookSDKException('Unexpected debug token response data. '
+                                       'Got: {}'.format(metadata),
                                        401)
 
         self.metadata = metadata['data'].copy()
