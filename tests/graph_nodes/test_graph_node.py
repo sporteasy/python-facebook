@@ -1,3 +1,4 @@
+import json
 from collections import OrderedDict
 from datetime import datetime
 from time import mktime
@@ -121,5 +122,7 @@ class GraphNodeTestCase(PythonFacebookTestCase):
             'id': '123',
         }))
         collectionAsString = collection.as_json()
-        self.assertEqual('{"date": "2014-07-15T03:44:53+0000", "id": "123"}',
-                         collectionAsString)
+
+        expected = '{"date": "2014-07-15T03:44:53+0000", "id": "123"}'
+        self.assertEqual(len(expected), len(collectionAsString))
+        self.assertEqual(json.loads(expected), json.loads(collectionAsString))
