@@ -1,4 +1,5 @@
 import os
+import codecs
 
 
 class UrandomPseudoRandomStringGenerator(object):
@@ -9,4 +10,4 @@ class UrandomPseudoRandomStringGenerator(object):
         """
         Generate a cryptographically secure pseudorandom number
         """
-        return os.urandom(length).encode('hex')
+        return codecs.encode(os.urandom(length), 'hex_codec')
