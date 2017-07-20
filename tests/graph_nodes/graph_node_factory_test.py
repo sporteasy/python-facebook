@@ -136,7 +136,8 @@ class GraphNodeFactoryTest(PythonFacebookTestCase):
             'name': 'Foo McBar',
             'link': 'http://facebook/foo',
         }
-        self.assertEquals(len(json.dumps(expected)), len(graphData[0].as_json()))
+        self.assertEquals(len(json.dumps(expected)),
+                          len(graphData[0].as_json()))
         self.assertEqual(expected, json.loads(graphData[0].as_json()))
 
         expected = {
@@ -144,7 +145,8 @@ class GraphNodeFactoryTest(PythonFacebookTestCase):
             'name': 'Bar McBaz',
             'link': 'http://facebook/bar',
         }
-        self.assertEquals(len(json.dumps(expected)), len(graphData[1].as_json()))
+        self.assertEquals(len(json.dumps(expected)),
+                          len(graphData[1].as_json()))
         self.assertEqual(expected, json.loads(graphData[1].as_json()))
 
     def testAGraphNodeWillBeCastAsAGraphNode(self):
