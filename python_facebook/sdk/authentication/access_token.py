@@ -26,7 +26,15 @@ class AccessToken(object):
 
     def get_app_secret_proof(self, app_secret):
         # convert to bytes as hmac does not accept unicode
-        return hmac.new(b'{}'.format(app_secret), b'{}'.format(self.value),
+        try:
+            # python3
+            app_secret = bytes(app_secret, 'utf-8')
+            value = bytes(self.value, 'utf-8')
+        except TypeError:
+            # python2
+            app_secret = bytes(app_secret)
+            value = bytes(self.value)
+        return hmac.new(app_secret, value,
                         hashlib.sha256).hexdigest()
 
     def get_expires_at(self):
