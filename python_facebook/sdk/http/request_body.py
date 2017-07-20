@@ -9,8 +9,15 @@ class RequestBody(object):
     def _build_nested_params(self, params, output, base_key=None):
         # build params with key looking like PHP ones,
         # eg `form[field1][field2][field3]`
+        def _check_type(_value):
+            try:
+                return isinstance(_value, (basestring, int, long))
+            except NameError:
+                # python3 does not supports basestring
+                return isinstance(_value, (str, int, long))
+
         for key, value in params.items():
-            if isinstance(value, (basestring, int, long)):
+            if _check_type(value):
                 if base_key:
                     output_key = '{}[{}]'.format(base_key, key)
                 else:
