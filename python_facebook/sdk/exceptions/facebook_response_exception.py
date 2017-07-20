@@ -57,7 +57,7 @@ class FacebookResponseException(FacebookSDKException):
         code = data['error'].get('code', None)
         message = data['error'].get('message', 'Unknown error from Graph.')
 
-        if data['error']['error_subcode']:
+        if data['error'].get('error_subcode'):
             if data['error']['error_subcode'] \
                     in OTHER_AUTHENTICATION_ERROR_CODES:
                 return FacebookResponseException(
