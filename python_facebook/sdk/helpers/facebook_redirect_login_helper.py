@@ -1,4 +1,7 @@
-import urllib
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 
 from python_facebook.sdk.authentication.access_token import AccessToken
 from python_facebook.sdk.exceptions.facebook_sdk_exception import \
@@ -77,7 +80,7 @@ class FacebookRedirectLoginHelper(object):
             'access_token': access_token.get_value()
         }
 
-        return 'https://www.facebook.com/logout.php?' + urllib.urlencode(
+        return 'https://www.facebook.com/logout.php?' + urlencode(
             sorted(params.items()))
 
     def get_re_request_url(self, redirect_url, scope=None, separator='&'):
