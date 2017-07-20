@@ -1,5 +1,8 @@
 import time
-import urllib
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 
 from python_facebook.sdk.const import VERSION
 from python_facebook.sdk.const import DEFAULT_GRAPH_VERSION
@@ -69,7 +72,7 @@ class OAuth2Client(object):
         return '{}/{}/dialog/oauth?{}'.format(
             self.BASE_AUTHORIZATION_URL,
             self.graph_version,
-            urllib.urlencode(sorted(params.items())))
+            urlencode(sorted(params.items())))
 
     def get_access_token_from_code(self, code, redirect_uri=''):
         """

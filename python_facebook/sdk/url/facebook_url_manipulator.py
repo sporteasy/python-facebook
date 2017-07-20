@@ -3,10 +3,10 @@ from __future__ import unicode_literals
 
 import re
 try:
-    from urllib.parse import urlparse, parse_qs
+    from urllib.parse import urlparse, parse_qs, urlencode
 except ImportError:
     from urlparse import urlparse, parse_qs
-import urllib
+    from urllib import urlencode
 from python_facebook.sdk.response import QueryStringDictFormatter
 
 
@@ -38,7 +38,7 @@ class FacebookUrlManipulator(object):
             return url
 
         if '?' not in url:
-            return url + '?' + urllib.urlencode(sorted(new_params.items()))
+            return url + '?' + urlencode(sorted(new_params.items()))
 
         path, query_string = url.split('?')
         query_params = QueryStringDictFormatter(
@@ -46,7 +46,7 @@ class FacebookUrlManipulator(object):
         # Favor query_params from the original URL over params
         new_params.update(query_params)
 
-        return path + '?' + urllib.urlencode(sorted(new_params.items()))
+        return path + '?' + urlencode(sorted(new_params.items()))
 
     @staticmethod
     def get_params_as_array(url):

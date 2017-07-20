@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import urllib
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 from collections import OrderedDict
 
 from python_facebook.sdk.http.request_body import RequestBody
@@ -13,4 +16,4 @@ class RequestBodyUrlEncoded(RequestBody):
 
     def get_body(self):
         output = self._build_nested_params(self.params, OrderedDict())
-        return urllib.urlencode(output)
+        return urlencode(output)
