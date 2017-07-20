@@ -9,6 +9,11 @@ Platform from your Python app.
 Python Facebook is largely inspired from the [Official Facebook PHP SDK](https://github.com/facebook/php-graph-sdk).
 This is a work in progress and only support the Facebook Login for now.
 
+Installation
+------------
+
+pip install -e git+https://github.com/sporteasy/python-facebook.git@master#egg=python_facebook
+
 
 Usage
 -----
