@@ -26,7 +26,8 @@ class RequestBodyMultipartTest(PythonFacebookTestCase):
                         "twitter handle.\r\n" \
                         "--foo_boundary--\r\n"
         self.assertEqual(len(expected_body), len(body))
-        self.assertEqual(sorted(expected_body.split('--foo_boundary')), sorted(body.split('--foo_boundary')))
+        self.assertEqual(sorted(expected_body.split('--foo_boundary')),
+                         sorted(body.split('--foo_boundary')))
 
     def testCanProperlyEncodeFilesAndParams(self):
         # file = FacebookFile('__DIR__' + '/../foo.txt')
