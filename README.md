@@ -6,41 +6,45 @@ Python Facebook
 This repository contains an open source Python library that allows you to access Facebook
 Platform from your Python app.
 
-Python Facebook is largely inspired from the [Official Facebook PHP SDK](https://github.com/facebook/facebook-php-sdk-v4).
+Python Facebook is largely inspired from the [Official Facebook PHP SDK](https://github.com/facebook/php-graph-sdk).
 This is a work in progress and only support the Facebook Login for now.
 
 
 Usage
 -----
 
+Facebook Login:
 ```
-from python_facebook.helpers.login import FacebookRedirectLoginHelper
-from python_facebook.session import FacebookSession
+from python_facebook.sdk.facebook import Facebook
+from python_facebook.sdk.persistent_data.django_persistent_data_handler import DjangoPersistentDataHandler
 
 app_id = '<your_app_id>'
 app_secret = '<your_app_secret>'
 redirect_url = 'http://<your_redirect_url>'
 
-graph = FacebookGraph(app_id, app_secret)
-login_url = graph.get_login_url(redirect_url)
+fb = Facebook({
+    'app_id': app_id,
+    'app_secret': app_secret,
+    'persistent_data_handler': DjangoPersistentDataHandler(django_session)
+})
+fbrlh = self.facebook.get_redirect_login_helper()
+login_url = fbrlh.get_login_url(redirect_url, scope=['public_profile'])
 ```
 
 Then in the view of your redirect url:
 
 ```
-graph.set_session_from_redirect(redirect_url, code, state)
-user = graph.get_graph_user()
+access_token = fbrlh.get_access_token({'code': code, 'state': state}, redirect_url)
 ```
 "code" and "state" values are found in the GET parameters of the redirect url.
 
 
-Getting info with an access_token:
+Getting User info with an access_token:
 
 ```
-access_token_str = u'<access_token_str>'
+fb.get(
+    '/me?fields=id,name,first_name,last_name',
+    access_token=self.access_token
+).get_decoded_body()
 
-graph = FacebookGraph(APP_ID, APP_SECRET)
-graph.set_access_token(access_token_str)
-info = graph.get_access_token_info()
-user = graph.get_graph_user()
 ```
