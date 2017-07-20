@@ -1,5 +1,7 @@
-import urllib
-
+try:
+    from urllib.parse import quote_plus
+except ImportError:
+    from urllib import quote_plus
 from tests import PythonFacebookTestCase
 from python_facebook.sdk.facebook import Facebook
 from python_facebook.sdk.facebook_app import FacebookApp
@@ -52,10 +54,10 @@ class FacebookRedirectLoginHelperTestCase(PythonFacebookTestCase):
         }
 
         for key, value in params.items():
-            self.assertIn('{}={}'.format(key, urllib.quote_plus(value)),
+            self.assertIn('{}={}'.format(key, quote_plus(value)),
                           login_url,
                           '{}={} not found in login_url'.format(
-                              key, urllib.quote_plus(value)))
+                              key, quote_plus(value)))
 
     def test_logout_url(self):
         logout_url = self.redirect_login_helper.get_logout_url(
@@ -71,10 +73,10 @@ class FacebookRedirectLoginHelperTestCase(PythonFacebookTestCase):
         }
 
         for key, value in params.items():
-            self.assertIn('{}={}'.format(key, urllib.quote_plus(value)),
+            self.assertIn('{}={}'.format(key, quote_plus(value)),
                           logout_url,
                           '{}={} not found in logout_url'.format(
-                              key, urllib.quote_plus(value)))
+                              key, quote_plus(value)))
 
     def test_an_access_token_can_be_obtained_from_redirect(self):
         self.persistent_data_handler.set('state', 'foo_state')

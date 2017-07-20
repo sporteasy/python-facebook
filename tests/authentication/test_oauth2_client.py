@@ -1,5 +1,7 @@
-import urllib
-
+try:
+    from urllib.parse import quote_plus
+except ImportError:
+    from urllib import quote_plus
 from tests import PythonFacebookTestCase
 from python_facebook.sdk.authentication.access_token import AccessToken
 from python_facebook.sdk.authentication.access_token_metadata import \
@@ -67,10 +69,10 @@ class OAuth2ClientTestCase(PythonFacebookTestCase):
             'foo': 'bar'
         }
         for key, value in params.items():
-            self.assertIn('{}={}'.format(key, urllib.quote_plus(value)),
+            self.assertIn('{}={}'.format(key, quote_plus(value)),
                           oauth_url,
                           '{}={} not found in oauth_url'.format(
-                              key, urllib.quote_plus(value)))
+                              key, quote_plus(value)))
 
     def test_can_get_access_token_from_code(self):
         self.client.set_access_token_response()
