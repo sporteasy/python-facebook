@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
 import json
-import sys
-
 from python_facebook.sdk.exceptions.facebook_response_exception import \
     FacebookResponseException
 from python_facebook.sdk.graph_nodes.graph_node_factory import GraphNodeFactory
-
-if sys.version_info >= (3, 0):
-    import urllib.parse as urlparse
-else:
-    import urlparse
+try:
+    from urllib.parse import parse_qs
+except ImportError:
+    from urlparse import parse_qs
 
 
 class QueryStringDictFormatter(object):
@@ -99,7 +96,7 @@ class FacebookResponse(object):
             # ValueError: malformed JSON string
             self.decoded_body = {}
             try:
-                self.decoded_body = urlparse.parse_qs(self.body)
+                self.decoded_body = parse_qs(self.body)
                 self.decoded_body = {key: val[0] for key, val in
                                      self.decoded_body.items()}
             except ValueError:

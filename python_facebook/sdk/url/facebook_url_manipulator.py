@@ -2,7 +2,10 @@
 from __future__ import unicode_literals
 
 import re
-import urlparse
+try:
+    from urllib.parse import urlparse, parse_qs
+except ImportError:
+    from urlparse import urlparse, parse_qs
 import urllib
 from python_facebook.sdk.response import QueryStringDictFormatter
 
@@ -12,10 +15,10 @@ class FacebookUrlManipulator(object):
     def remove_params_from_url(url, params_to_filter):
         if not url:
             return url
-        parsed = urlparse.urlparse(url)
+        parsed = urlparse(url)
         params = {}
         if parsed.query:
-            for key, value in urlparse.parse_qs(parsed.query).items():
+            for key, value in parse_qs(parsed.query).items():
                 if key not in params_to_filter:
                     params[key] = value[0]
 
@@ -39,7 +42,7 @@ class FacebookUrlManipulator(object):
 
         path, query_string = url.split('?')
         query_params = QueryStringDictFormatter(
-            urlparse.parse_qs(query_string)).output
+            parse_qs(query_string)).output
         # Favor query_params from the original URL over params
         new_params.update(query_params)
 
@@ -49,8 +52,8 @@ class FacebookUrlManipulator(object):
     def get_params_as_array(url):
         if not url:
             return {}
-        parsed = urlparse.urlparse(url)
-        parsed_dict = urlparse.parse_qs(parsed.query)
+        parsed = urlparse(url)
+        parsed_dict = parse_qs(parsed.query)
         return {key: value[0] for key, value in parsed_dict.items()}
 
     @staticmethod
