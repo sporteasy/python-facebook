@@ -131,12 +131,22 @@ class FacebookRedirectLoginHelper(object):
         Validate the request against a cross-site request forgery.
         """
         state = self.get_state(get_params)
+        if type(state) == bytes:
+            # Defensive condition for backwards compatibility in case
+            # state was generated in bytes instead of str
+            state = state.decode("utf8")
+
         if not state:
             raise FacebookSDKException(
                 'Cross-site request forgery validation failed. '
                 'Required GET param "state" missing.')
 
         saved_state = self.persistent_data_handler.get('state')
+        if type(saved_state) == bytes:
+            # Defensive condition for backwards compatibility in case
+            # state was generated in bytes instead of str
+            saved_state = saved_state.decode("utf8")
+
         if not saved_state:
             raise FacebookSDKException(
                 'Cross-site request forgery validation failed. '

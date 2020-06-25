@@ -10,4 +10,4 @@ class UrandomPseudoRandomStringGenerator(object):
         """
         Generate a cryptographically secure pseudorandom number
         """
-        return codecs.encode(os.urandom(length), 'hex_codec')
+        return codecs.encode(os.urandom(length), 'hex_codec').decode("utf8")
