@@ -74,5 +74,5 @@ class FacebookUrlManipulator(object):
 
     @staticmethod
     def base_graph_url_endpoint(url_to_trim):
-        pattern = '^https?://.+\.facebook\.com(\/v.+?)?/'
+        pattern = r'^https?://.+\.facebook\.com(\/v.+?)?/'
         return '/{}'.format(re.sub(pattern, '', url_to_trim))

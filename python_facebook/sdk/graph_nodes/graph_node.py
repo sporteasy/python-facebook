@@ -69,7 +69,7 @@ class GraphNode(BaseCollection):
         except ValueError:
             # date_parse raises for dates like 2014-W36, so let's give him
             # another chance
-            pattern = '^\d{4}\-W([0-4][0-9]|5[0-2])$'
+            pattern = r'^\d{4}\-W([0-4][0-9]|5[0-2])$'
             return re.match(pattern, string) is not None
 
     def should_cast_as_datetime(self, key):

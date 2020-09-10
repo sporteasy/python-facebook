@@ -39,7 +39,7 @@ class GraphRawResponse(object):
 
     def set_http_response_code_from_header(self, raw_response_header):
         # ex: HTTP/1.1 200 OK
-        pattern = '^HTTP/\d\.\d\s+(\d+)\s+.*'
+        pattern = r'^HTTP/\d\.\d\s+(\d+)\s+.*'
 
         result = re.match(pattern, raw_response_header)
         self.http_response_code = int(result.group(1))
